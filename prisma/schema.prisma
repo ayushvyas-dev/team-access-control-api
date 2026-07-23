@@ -1,0 +1,25 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+  
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String    @db.VarChar(255)
+  email         String    @db.VarChar(255)
+  passwordHash  String    @map("password_hash") @db.VarChar(255)
+  emailVerified Boolean   @default(false) @map("email_verified")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
+
+  @@unique([email, deletedAt])
+  @@index([deletedAt])
+  @@map("users")
+}
