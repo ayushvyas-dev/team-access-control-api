@@ -2,12 +2,13 @@ import { Router } from "express";
 
 const healthRouter = Router()
 
-healthRouter.get('/live', (req, res) => {
-    res.send('live endpoint')
+healthRouter.get('/', (req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: "Server is healthy",
+        timestamp: new Date().toISOString(),
+    });
 })
 
-healthRouter.get('/ready', (req, res) => {
-    res.send('ready endpoint')
-})
 
 export default healthRouter;
