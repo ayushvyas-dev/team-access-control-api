@@ -1,15 +1,10 @@
-import { registerUser, verifyUserEmail } from "../services/auth.services.js";
+import {
+  registerUser,
+  loginUser,
+  verifyUserEmail,
+  refreshAccessToken,
+} from "../services/auth.services.js";
 import { NextFunction, Request, Response } from "express";
-import { refreshAccessToken } from "../services/session.service.js";
-import { sendVerificationEmail } from "../services/email.services.js";
-
-const ACCESS_COOKIE_MAX_AGE = 15 * 60 * 1000;
-const REFRESH_COOKIE_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
-const cookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
-};
 
 export async function register(
   req: Request,
@@ -21,13 +16,14 @@ export async function register(
 
     const user = await registerUser({ name, email, password });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message:
+        "User registered successfully, verify your email to activate your account",
       data: { name: user.name, email: user.email },
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -39,78 +35,68 @@ export async function verifyEmail(
   try {
     const { email, otp } = req.body;
     const result = await verifyUserEmail(email, otp);
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Email verified successfully",
       data: result,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
-// export async function login(req: Request, res: Response, next: NextFunction) {
-//   try {
-//     const { email, password } = req.body;
-//     const { user, accessToken, refreshToken } = await loginUser({
-//       email,
-//       password,
-//     });
+export async function login(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { email, password } = req.body;
+    const userAgent = req.get("user-agent");
+    const ip = req.ip;
+    const { user, accessToken, refreshToken } = await loginUser({
+      email,
+      password,
+      userAgent,
+      ip,
+    });
 
-//     res.cookie("accessToken", accessToken, {
-//       ...cookieOptions,
-//       maxAge: ACCESS_COOKIE_MAX_AGE,
-//     });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    });
 
-//     res.cookie("refreshToken", refreshToken, {
-//       ...cookieOptions,
-//       maxAge: REFRESH_COOKIE_MAX_AGE,
-//     });
+    return res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      user,
+      accessToken,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
 
-//     res.status(200).json({
-//       success: true,
-//       message: "User logged in successfully",
-//       user,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// }
+export async function refresh(req: Request, res: Response,next:NextFunction) {
+  try {
+    const refreshToken = req.cookies.refreshToken;
 
-// export async function refreshUser(req: Request, res: Response) {
-//   try {
-//     const refreshToken = req.cookies.refreshToken;
+    const {newAccessToken,newRefreshToken} = await refreshAccessToken(refreshToken);
+  
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    });
 
-//     if (!refreshToken) {
-//       return res.status(401).json({
-//         success: false,
-//         message: "Refresh token missing",
-//       });
-//     }
-
-//     const tokens = await refreshAccessToken(refreshToken);
-
-//     res.cookie("accessToken", tokens.accessToken, {
-//       ...cookieOptions,
-//       maxAge: ACCESS_COOKIE_MAX_AGE,
-//     });
-
-//     res.cookie("refreshToken", tokens.refreshToken, {
-//       ...cookieOptions,
-//       maxAge: REFRESH_COOKIE_MAX_AGE,
-//       path: "/api/v1/auth",
-//     });
-
-//     return res.status(200).json({
-//       success: true,
-//     });
-//   } catch {
-//     return res.status(401).json({
-//       success: false,
-//       message: "Invalid or expired session",
-//     });
-//   }
-// }
+    return res.status(200).json({
+      success: true,
+      accessToken:newAccessToken,
+    });
+  } catch (error){
+    
+     return next(error)
+  }
+}
 
 // export async function logoutUser(req: Request, res: Response) {
 //   const refreshToken = req.cookies.refreshToken;

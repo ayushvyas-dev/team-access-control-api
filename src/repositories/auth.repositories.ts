@@ -64,3 +64,13 @@ export async function markUserEmailVerify(userId: string, otpId: string) {
     }),
   ]);
 }
+
+export async function createRefreshToken(data: {
+  sessionId: string;
+  tokenHash: string;
+  expiresAt: Date;
+}) {
+  return prisma.refreshToken.create({
+    data,
+  });
+}
