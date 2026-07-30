@@ -7,12 +7,9 @@ import {
   markUserEmailVerify,
 } from "../repositories/auth.repositories.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { config } from "../config/env.config.js";
-import crypto from "crypto";
 
-
-
+import { hashToken } from "../utils/token.js";
+import { createToken } from "../utils/token.js";
 import {
   createSession,
   findSessionByRefreshTokenHash,
@@ -21,7 +18,6 @@ import {
 
 import { sendVerificationEmail } from "./email.services.js";
 import { AppError } from "../utils/appError.js";
-
 
 const REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000;
 
@@ -94,37 +90,10 @@ export async function loginUser({
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_LIFETIME),
     });
 
-    const accessToken = jwt.sign(
-      {
-        sub: user.id,
-        sessionId: session.id,
-        type: "access",
-      },
-      config.ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: 15 * 60,
-        jwtid: crypto.randomUUID()
-      },
-    );
+    const accessToken = createToken(user.id, session.id, "access");
 
-
-    const refreshToken = jwt.sign(
-      {
-        sub: user.id,
-        sessionId: session.id,
-        type: "refresh",
-      },
-      config.REFRESH_TOKEN_SECRET,
-      {
-        expiresIn: REFRESH_TOKEN_LIFETIME,
-        jwtid: crypto.randomUUID()
-      },
-    );
-    const refreshTokenHash = crypto
-      .createHash("sha256")
-      .update(refreshToken)
-      .digest("hex");
-
+    const refreshToken = createToken(user.id, session.id, "refresh");
+    const refreshTokenHash = hashToken(refreshToken);
 
     await createRefreshToken({
       sessionId: session.id,
@@ -164,14 +133,9 @@ export async function verifyUserEmail(email: string, otp: string) {
 }
 
 export async function refreshAccessToken(refreshToken: string) {
- 
-  const refreshTokenHash = crypto
-    .createHash("sha256")
-    .update(refreshToken)
-    .digest("hex");
+  const refreshTokenHash = hashToken(refreshToken);
 
   const storedToken = await findSessionByRefreshTokenHash(refreshTokenHash);
-
 
   if (!storedToken) {
     throw new Error("Invalid refresh token");
@@ -186,7 +150,6 @@ export async function refreshAccessToken(refreshToken: string) {
   }
 
   const session = storedToken.session;
-  
 
   if (session.revokedAt) {
     throw new Error("Session has been revoked");
@@ -196,47 +159,18 @@ export async function refreshAccessToken(refreshToken: string) {
   }
 
   // Rotate refresh token
-  const newRefreshToken = jwt.sign(
-    {
-      sub: session.userId,
-      sessionId: session.id,
-      type: "refresh",
-    },
-    config.REFRESH_TOKEN_SECRET,
-    {
-      expiresIn: "30d",
-      jwtid: crypto.randomUUID()
-    },
-  );
+  const newRefreshToken = createToken(session.userId, session.id, "refresh");
 
-  const newRefreshTokenHash = crypto
-    .createHash("sha256")
-    .update(newRefreshToken)
-    .digest("hex");
+  const newRefreshTokenHash = hashToken(newRefreshToken);
 
-   
-
-    await rotateRefreshToken({
+  await rotateRefreshToken({
     oldTokenId: storedToken.id,
     sessionId: session.id,
     tokenHash: newRefreshTokenHash,
     expiresAt: new Date(Date.now() + REFRESH_TOKEN_LIFETIME),
   });
 
- 
-  const newAccessToken = jwt.sign(
-    {
-      sub: session.userId,
-      sessionId: session.id,
-    },
-    config.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: "15m",
-      jwtid: crypto.randomUUID()
-    },
-  );
-
- 
+  const newAccessToken = createToken(session.userId, session.id, "access");
 
   return {
     newAccessToken: newAccessToken,

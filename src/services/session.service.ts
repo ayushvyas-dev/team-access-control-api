@@ -1,18 +1,18 @@
-import { findSessionByRefreshTokenHash, revokeSession, updateSessionRefreshToken } from "../repositories/session.repository.js";
-import { createAccessToken } from "../utils/accessToken.js";
-import { generateRefreshToken, hashRefreshToken } from "../utils/refreshToken.js";
+import {
+  findSessionByRefreshTokenHash,
+  revokeSession,
+  updateSessionRefreshToken,
+} from "../repositories/session.repository.js";
+import { createAccessToken } from "../utils/token.js";
+import {
+  generateRefreshToken,
+  hashRefreshToken,
+} from "../utils/refreshToken.js";
 
+export const refreshAccessToken = async (refreshToken: string) => {
+  const refreshTokenHash = hashRefreshToken(refreshToken);
 
-export const refreshAccessToken = async (
-  refreshToken: string
-) => {
-  const refreshTokenHash =
-    hashRefreshToken(refreshToken);
-
-  const session =
-    await findSessionByRefreshTokenHash(
-      refreshTokenHash
-    );
+  const session = await findSessionByRefreshTokenHash(refreshTokenHash);
 
   if (!session) {
     throw new Error("Invalid refresh token");
@@ -27,21 +27,13 @@ export const refreshAccessToken = async (
   }
 
   // Rotate refresh token
-  const newRefreshToken =
-    generateRefreshToken();
+  const newRefreshToken = generateRefreshToken();
 
-  const newRefreshTokenHash =
-    hashRefreshToken(newRefreshToken);
+  const newRefreshTokenHash = hashRefreshToken(newRefreshToken);
 
-  await updateSessionRefreshToken(
-    session.id,
-    newRefreshTokenHash
-  );
+  await updateSessionRefreshToken(session.id, newRefreshTokenHash);
 
-  const newAccessToken = createAccessToken(
-    session.userId,
-    session.id
-  );
+  const newAccessToken = createAccessToken(session.userId, session.id);
 
   return {
     accessToken: newAccessToken,
@@ -49,14 +41,10 @@ export const refreshAccessToken = async (
   };
 };
 
-
-export const logoutUser = async (
-  refreshToken: string
-) => {
+export const logoutUser = async (refreshToken: string) => {
   const hash = hashRefreshToken(refreshToken);
 
-  const session =
-    await findSessionByRefreshTokenHash(hash);
+  const session = await findSessionByRefreshTokenHash(hash);
 
   if (!session) {
     return;

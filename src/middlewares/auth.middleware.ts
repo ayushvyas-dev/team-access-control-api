@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "../utils/accessToken.js";
+import { verifyAccessToken } from "../utils/token.js";
 
 export function authenticate(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies.accessToken;
 
   if (!token) {
     return res.status(401).json({
+      success: false,
       message: "Unauthorized",
     });
   }
@@ -18,9 +19,10 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
       sessionId: payload.sessionId,
     };
 
-    next();
+    return next();
   } catch {
     return res.status(401).json({
+      success: false,
       message: "Invalid or expired access token",
     });
   }
