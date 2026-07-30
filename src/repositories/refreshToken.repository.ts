@@ -1,4 +1,0 @@
-// createRefreshToken(...)
-// findRefreshTokenByHash(...)
-// revokeRefreshToken(...)
-// rotateRefreshToken(...)

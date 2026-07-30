@@ -1,21 +1,27 @@
 import { Router } from "express";
-import { refresh, register, verifyEmail } from "../controllers/auth.controllers.js";
+import {
+  refresh,
+  register,
+  verifyEmail,
+} from "../controllers/auth.controllers.js";
 import { login } from "../controllers/auth.controllers.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import {
   registerUserSchema,
   loginUserSchema,
+  verifyUserSchema,
+  refreshTokenSchema,
 } from "../validators/auth.validator.js";
 
 const authRouter = Router();
 
 authRouter.post("/register", validate(registerUserSchema), register);
 
-authRouter.post("/verify-email", verifyEmail);
+authRouter.post("/verify-email", validate(verifyUserSchema), verifyEmail);
 
 authRouter.post("/login", validate(loginUserSchema), login);
 
-authRouter.post("/refresh", refresh);
+authRouter.post("/refresh", validate(refreshTokenSchema), refresh);
 
 authRouter.post("/logout", (req, res) => {
   res.send("logout endpoint");
