@@ -1,10 +1,13 @@
 import { Router } from "express";
+import { validate } from "../middlewares/validate.middleware.js";
+import { createOrganizationSchema } from "../validators/organization.validator.js";
+import { createOrganization } from "../controllers/organization.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
 const organizationRouter = Router()
 
-organizationRouter.post('', (req, res) => {
-    res.send('create organization endpoint')
-})
+organizationRouter.post('/',validate(createOrganizationSchema),authenticate,createOrganization
+)
 
 organizationRouter.get('/', (req, res) => {
     res.send('list organizations endpoint')

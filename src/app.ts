@@ -7,7 +7,7 @@ import organizationRouter from "./routes/organization.route.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 import { notFoundMiddleware } from "./middlewares/notFound.middleware.js";
-import userRouter from "./routes/user.routes.js";
+import userRouter from "./routes/user.route.js";
 
 const app = express();
 

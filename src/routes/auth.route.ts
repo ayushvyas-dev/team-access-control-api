@@ -3,8 +3,8 @@ import {
   refresh,
   register,
   verifyEmail,
-} from "../controllers/auth.controllers.js";
-import { login } from "../controllers/auth.controllers.js";
+} from "../controllers/auth.controller.js";
+import { login } from "../controllers/auth.controller.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import {
   registerUserSchema,

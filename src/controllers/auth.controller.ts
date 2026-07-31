@@ -3,7 +3,7 @@ import {
   loginUser,
   verifyUserEmail,
   refreshAccessToken,
-} from "../services/auth.services.js";
+} from "../services/auth.service.js";
 import { NextFunction, Request, Response } from "express";
 
 export async function register(

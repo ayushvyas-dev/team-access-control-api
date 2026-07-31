@@ -16,7 +16,7 @@ import {
   rotateRefreshToken,
 } from "../repositories/session.repository.js";
 
-import { sendVerificationEmail } from "./email.services.js";
+import { sendVerificationEmail } from "./email.service.js";
 import { AppError } from "../utils/appError.js";
 
 const REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000;
