@@ -20,7 +20,8 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
     };
 
     return next();
-  } catch {
+  } catch (error) {
+    
     return res.status(401).json({
       success: false,
       message: "Invalid or expired access token",

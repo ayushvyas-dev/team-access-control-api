@@ -2,7 +2,7 @@ import z from "zod";
 
 export const registerUserSchema = z.object({
   name: z.string().trim().min(3, "Name must be at least 3 characters long"),
-  email: z.string().trim().email("Invalid email"),
+  email: z.email("Invalid email").trim().toLowerCase(),
   password: z
     .string()
     .trim()
@@ -20,21 +20,17 @@ export const loginUserSchema = z.object({
 });
 
 export const verifyUserSchema = z.object({
-  body: z.object({
+  
     email: z.email("Invalid email address").trim().toLowerCase(),
 
     otp: z
       .string()
       .length(6, "OTP must be exactly 6 digits")
       .regex(/^\d{6}$/, "OTP must contain only digits"),
-  }),
-});
+  })
 
-export const refreshTokenSchema = z.object({
-  cookies: z.object({
-    refreshToken: z.string().min(1, "Refresh token is required"),
-  }),
-});
+
+
 
 export type RegisterUserInput = z.infer<typeof registerUserSchema>;
 export type LoginUserInput = z.infer<typeof loginUserSchema>;

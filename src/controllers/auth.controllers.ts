@@ -78,7 +78,9 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 export async function refresh(req: Request, res: Response,next:NextFunction) {
   try {
     const refreshToken = req.cookies.refreshToken;
-
+    if(!refreshToken){
+      throw new Error("Refresh token is required");
+    }
     const {newAccessToken,newRefreshToken} = await refreshAccessToken(refreshToken);
   
     res.cookie("refreshToken", newRefreshToken, {

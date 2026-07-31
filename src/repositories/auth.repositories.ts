@@ -8,6 +8,23 @@ export async function findUserByEmail(email: string) {
   });
 }
 
+export async function getUserById(userId:string) {
+    return prisma.user.findUnique({
+    where: {
+      id: userId,
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      emailVerified: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+}
+
 export async function createUser(data: {
   name: string;
   email: string;

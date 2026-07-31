@@ -10,7 +10,7 @@ import {
   registerUserSchema,
   loginUserSchema,
   verifyUserSchema,
-  refreshTokenSchema,
+  
 } from "../validators/auth.validator.js";
 
 const authRouter = Router();
@@ -21,7 +21,11 @@ authRouter.post("/verify-email", validate(verifyUserSchema), verifyEmail);
 
 authRouter.post("/login", validate(loginUserSchema), login);
 
-authRouter.post("/refresh", validate(refreshTokenSchema), refresh);
+authRouter.post("/refresh", refresh);
+
+authRouter.get("/users/me", (req, res) => {
+  res.send("get me");
+});
 
 authRouter.post("/logout", (req, res) => {
   res.send("logout endpoint");
