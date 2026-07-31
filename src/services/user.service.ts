@@ -1,4 +1,4 @@
-import { getUserById } from "../repositories/auth.repositories.js";
+import { getUserById } from "../repositories/auth.repository.js";
 
 
 export async function getCurrentUser(userId:string) {

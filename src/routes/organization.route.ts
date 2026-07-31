@@ -2,35 +2,35 @@ import { Router } from "express";
 
 const organizationRouter = Router()
 
-organizationRouter.post('/organizations', (req, res) => {
+organizationRouter.post('', (req, res) => {
     res.send('create organization endpoint')
 })
 
-organizationRouter.get('/organizations/', (req, res) => {
+organizationRouter.get('/', (req, res) => {
     res.send('list organizations endpoint')
 })
 
-organizationRouter.get('/organizations/:organizationId', (req, res) => {
+organizationRouter.get('/:organizationId', (req, res) => {
     res.send('get organization endpoint')
 })
 
-organizationRouter.get('/organizations/:organizationId/members', (req, res) => {
+organizationRouter.get('/:organizationId/members', (req, res) => {
     res.send('get organization members endpoint')
 })
 
-organizationRouter.patch('/organizations/:organizationId/members/:userId/role', (req, res) => {
+organizationRouter.patch('/:organizationId/members/:userId/role', (req, res) => {
     res.send('update member role endpoint')
 })
 
-organizationRouter.delete('/organizations/:organizationId/members/:userId', (req, res) => {
+organizationRouter.delete('/:organizationId/members/:userId', (req, res) => {
     res.send('remove member from organization endpoint')
 })
 
-organizationRouter.post('/organizations/:organizationId/invitations', (req, res) => {
+organizationRouter.post('/:organizationId/invitations', (req, res) => {
     res.send('invite member endpoint')
 })
 
-organizationRouter.get('/organizations/:organizationId/invitations', (req, res) => {
+organizationRouter.get('/:organizationId/invitations', (req, res) => {
     res.send('list organization invitations endpoint')
 })
 
@@ -46,7 +46,7 @@ organizationRouter.delete('invitations/:token/decline', (req, res) => {
     res.send('decline invitation endpoint')
 })
 
-organizationRouter.get('/organizations/:organizationId/audit-logs', (req, res) => {
+organizationRouter.get('/:organizationId/audit-logs', (req, res) => {
     res.send('get organization audit logs endpoint')
 })
 

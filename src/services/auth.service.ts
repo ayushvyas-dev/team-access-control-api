@@ -5,7 +5,7 @@ import {
   findOtpByEmail,
   findUserByEmail,
   markUserEmailVerify,
-} from "../repositories/auth.repositories.js";
+} from "../repositories/auth.repository.js";
 import bcrypt from "bcryptjs";
 
 import { hashToken } from "../utils/token.js";
