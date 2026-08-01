@@ -1,7 +1,11 @@
 import prisma from "../db/db.js";
 
-export async function createOrganizationWithOwner(data:{name:string,slug:string,userId:string}){
-   return prisma.$transaction(async (tx) => {
+export async function createOrganizationWithOwner(data: {
+  name: string;
+  slug: string;
+  userId: string;
+}) {
+  return prisma.$transaction(async (tx) => {
     const organization = await tx.organization.create({
       data: {
         name: data.name,
@@ -18,5 +22,20 @@ export async function createOrganizationWithOwner(data:{name:string,slug:string,
     });
 
     return organization;
+  });
+}
+
+export async function getOrganizationsByUserId(userId: string) {
+  return prisma.organization.findMany({
+    where: {
+      memberships: {
+        some: {
+          userId,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
