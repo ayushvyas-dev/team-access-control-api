@@ -1,6 +1,7 @@
 import { generateSlug } from "../utils/generateSlug.js";
 import {
   createOrganizationWithOwner,
+  getOrganizationById,
   getOrganizationsByUserId,
 } from "../repositories/organization.repository.js";
 import { Prisma } from "@prisma/client";
@@ -42,6 +43,21 @@ export async function getOrganizationsService(userId: string) {
       throw new Error("No organizations found for the user");
     }
     return organizations;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getOrganizationService(
+  userId: string,
+  organizationId: string,
+) {
+  try {
+    const organization = await getOrganizationById(userId, organizationId);
+    if (!organization) {
+      throw new Error("No organizations found for the user");
+    }
+    return organization;
   } catch (error) {
     throw error;
   }

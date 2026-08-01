@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validate.middleware.js";
-import { createOrganizationSchema } from "../validators/organization.validator.js";
+import {
+  createOrganizationSchema,
+  organizationIdSchema,
+} from "../validators/organization.validator.js";
 import {
   createOrganization,
+  getOrganization,
   getOrganizations,
 } from "../controllers/organization.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
@@ -11,16 +15,19 @@ const organizationRouter = Router();
 
 organizationRouter.post(
   "/",
-  validate(createOrganizationSchema),
   authenticate,
+  validate({ body: createOrganizationSchema }),
   createOrganization,
 );
 
 organizationRouter.get("/", authenticate, getOrganizations);
 
-organizationRouter.get("/:organizationId", (req, res) => {
-  res.send("get organization details endpoint");
-});
+organizationRouter.get(
+  "/:organizationId",
+  authenticate,
+  validate({ params: organizationIdSchema }),
+  getOrganization,
+);
 
 organizationRouter.get("/:organizationId/members", (req, res) => {
   res.send("get organization members endpoint");

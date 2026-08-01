@@ -39,3 +39,19 @@ export async function getOrganizationsByUserId(userId: string) {
     },
   });
 }
+
+export async function getOrganizationById(
+  userId: string,
+  organizationId: string,
+) {
+  return prisma.organization.findFirst({
+    where: {
+      id: organizationId,
+      memberships: {
+        some: {
+          userId,
+        },
+      },
+    },
+  });
+}

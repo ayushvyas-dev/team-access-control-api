@@ -10,16 +10,19 @@ import {
   registerUserSchema,
   loginUserSchema,
   verifyUserSchema,
-  
 } from "../validators/auth.validator.js";
 
 const authRouter = Router();
 
-authRouter.post("/register", validate(registerUserSchema), register);
+authRouter.post("/register", validate({ body: registerUserSchema }), register);
 
-authRouter.post("/verify-email", validate(verifyUserSchema), verifyEmail);
+authRouter.post(
+  "/verify-email",
+  validate({ body: verifyUserSchema }),
+  verifyEmail,
+);
 
-authRouter.post("/login", validate(loginUserSchema), login);
+authRouter.post("/login", validate({ body: loginUserSchema }), login);
 
 authRouter.post("/refresh", refresh);
 
