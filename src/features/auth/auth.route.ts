@@ -5,7 +5,7 @@ import {
   registerUserSchema,
   loginUserSchema,
   verifyUserSchema,
-} from "./auth.validator.js";
+} from "./auth.validation.js";
 import { validate } from "../../middlewares/validate.middleware.js";
 
 const authRouter = Router();

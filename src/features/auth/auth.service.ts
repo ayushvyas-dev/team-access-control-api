@@ -17,7 +17,6 @@ import {
 } from "../../features/sessions/session.repository.js";
 
 import { sendVerificationEmail } from "../../utils/email.js";
-import { AppError } from "../../utils/appError.js";
 
 const REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000;
 
