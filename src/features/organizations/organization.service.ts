@@ -1,11 +1,11 @@
-import { generateSlug } from "../utils/generateSlug.js";
+import { generateSlug } from "../../utils/generateSlug.js";
 import {
   createOrganizationWithOwner,
   deleteOrganizationById,
   getOrganizationById,
   getOrganizationsByUserId,
   updateOrganizationById,
-} from "../repositories/organization.repository.js";
+} from "./organization.repository.js";
 import { Prisma } from "@prisma/client";
 
 export async function createOrganizationService(name: string, userId: string) {

@@ -1,17 +1,18 @@
 import { Router } from "express";
-import { validate } from "../middlewares/validate.middleware.js";
+
 import {
   createOrganizationSchema,
   organizationIdSchema,
-} from "../validators/organization.validator.js";
+} from "./organization.validator.js";
 import {
   createOrganization,
   deleteOrganization,
   getOrganization,
   getOrganizations,
   updateOrganization,
-} from "../controllers/organization.controller.js";
-import { authenticate } from "../middlewares/auth.middleware.js";
+} from "./organization.controller.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
+import { validate } from "../../middlewares/validate.middleware.js";
 
 const organizationRouter = Router();
 

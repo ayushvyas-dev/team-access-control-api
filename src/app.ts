@@ -1,13 +1,13 @@
 import express from "express";
 
-import authRouter from "./routes/auth.route.js";
-import healthRouter from "./routes/health.route.js";
-import organizationRouter from "./routes/organization.route.js";
+import authRouter from "./features/auth/auth.route.js";
+import healthRouter from "./features/health/health.route.js";
+import organizationRouter from "./features/organizations/organization.route.js";
 
 import { errorHandler } from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 import { notFoundMiddleware } from "./middlewares/notFound.middleware.js";
-import userRouter from "./routes/user.route.js";
+import userRouter from "./features/users/user.route.js";
 
 const app = express();
 

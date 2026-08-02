@@ -1,16 +1,12 @@
 import { Router } from "express";
-import {
-  refresh,
-  register,
-  verifyEmail,
-} from "../controllers/auth.controller.js";
-import { login } from "../controllers/auth.controller.js";
-import { validate } from "../middlewares/validate.middleware.js";
+import { refresh, register, verifyEmail } from "./auth.controller.js";
+import { login } from "./auth.controller.js";
 import {
   registerUserSchema,
   loginUserSchema,
   verifyUserSchema,
-} from "../validators/auth.validator.js";
+} from "./auth.validator.js";
+import { validate } from "../../middlewares/validate.middleware.js";
 
 const authRouter = Router();
 

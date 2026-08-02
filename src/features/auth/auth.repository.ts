@@ -1,4 +1,4 @@
-import prisma from "../db/db.js";
+import prisma from "../../db/prisma.js";
 
 export async function findUserByEmail(email: string) {
   return prisma.user.findUnique({
@@ -89,5 +89,27 @@ export async function createRefreshToken(data: {
 }) {
   return prisma.refreshToken.create({
     data,
+  });
+}
+
+export async function updateUserById(userId: string, name: string) {
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      name,
+    },
+  });
+}
+
+export async function softDeleteUserById(userId: string) {
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      deletedAt: new Date(),
+    },
   });
 }

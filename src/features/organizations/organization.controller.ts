@@ -5,7 +5,7 @@ import {
   getOrganizationService,
   getOrganizationsService,
   updateOrganizationService,
-} from "../services/organization.service.js";
+} from "./organization.service.js";
 
 export async function createOrganization(
   req: Request,

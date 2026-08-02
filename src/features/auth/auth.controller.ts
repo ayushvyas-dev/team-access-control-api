@@ -3,7 +3,7 @@ import {
   loginUser,
   verifyUserEmail,
   refreshAccessToken,
-} from "../services/auth.service.js";
+} from "./auth.service.js";
 import { NextFunction, Request, Response } from "express";
 
 export async function register(
@@ -75,14 +75,15 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export async function refresh(req: Request, res: Response,next:NextFunction) {
+export async function refresh(req: Request, res: Response, next: NextFunction) {
   try {
     const refreshToken = req.cookies.refreshToken;
-    if(!refreshToken){
+    if (!refreshToken) {
       throw new Error("Refresh token is required");
     }
-    const {newAccessToken,newRefreshToken} = await refreshAccessToken(refreshToken);
-  
+    const { newAccessToken, newRefreshToken } =
+      await refreshAccessToken(refreshToken);
+
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -92,11 +93,10 @@ export async function refresh(req: Request, res: Response,next:NextFunction) {
 
     return res.status(200).json({
       success: true,
-      accessToken:newAccessToken,
+      accessToken: newAccessToken,
     });
-  } catch (error){
-    
-     return next(error)
+  } catch (error) {
+    return next(error);
   }
 }
 

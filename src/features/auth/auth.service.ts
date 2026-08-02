@@ -5,19 +5,19 @@ import {
   findOtpByEmail,
   findUserByEmail,
   markUserEmailVerify,
-} from "../repositories/auth.repository.js";
+} from "./auth.repository.js";
 import bcrypt from "bcryptjs";
 
-import { hashToken } from "../utils/token.js";
-import { createToken } from "../utils/token.js";
+import { hashToken } from "../../utils/token.js";
+import { createToken } from "../../utils/token.js";
 import {
   createSession,
   findSessionByRefreshTokenHash,
   rotateRefreshToken,
-} from "../repositories/session.repository.js";
+} from "../../features/sessions/session.repository.js";
 
-import { sendVerificationEmail } from "./email.service.js";
-import { AppError } from "../utils/appError.js";
+import { sendVerificationEmail } from "../../utils/email.js";
+import { AppError } from "../../utils/appError.js";
 
 const REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000;
 
