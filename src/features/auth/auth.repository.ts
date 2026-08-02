@@ -100,6 +100,14 @@ export async function updateUserById(userId: string, name: string) {
     data: {
       name,
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      emailVerified: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 }
 
