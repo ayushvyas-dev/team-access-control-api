@@ -6,8 +6,10 @@ import {
 } from "../validators/organization.validator.js";
 import {
   createOrganization,
+  deleteOrganization,
   getOrganization,
   getOrganizations,
+  updateOrganization,
 } from "../controllers/organization.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 
@@ -29,9 +31,12 @@ organizationRouter.get(
   getOrganization,
 );
 
-organizationRouter.get("/:organizationId/members", (req, res) => {
-  res.send("get organization members endpoint");
-});
+organizationRouter.patch(
+  "/:organizationId",
+  authenticate,
+  validate({ params: organizationIdSchema, body: createOrganizationSchema }),
+  updateOrganization,
+);
 
 organizationRouter.patch(
   "/:organizationId/members/:userId/role",
@@ -39,6 +44,17 @@ organizationRouter.patch(
     res.send("update member role endpoint");
   },
 );
+
+organizationRouter.delete(
+  "/:organizationId",
+  authenticate,
+  validate({ params: organizationIdSchema }),
+  deleteOrganization,
+);
+
+organizationRouter.get("/:organizationId/members", (req, res) => {
+  res.send("get organization members endpoint");
+});
 
 organizationRouter.delete("/:organizationId/members/:userId", (req, res) => {
   res.send("remove member from organization endpoint");

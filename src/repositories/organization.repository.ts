@@ -55,3 +55,61 @@ export async function getOrganizationById(
     },
   });
 }
+
+export async function updateOrganizationById(
+  userId: string,
+  organizationId: string,
+  name: string,
+) {
+  const organization = await prisma.organization.findFirst({
+    where: {
+      id: organizationId,
+      memberships: {
+        some: {
+          userId,
+          role: "OWNER",
+        },
+      },
+    },
+  });
+
+  if (!organization) {
+    throw new Error("Organization not found or permission denied");
+  }
+
+  return prisma.organization.update({
+    where: {
+      id: organizationId,
+    },
+    data: {
+      name,
+    },
+  });
+}
+
+export async function deleteOrganizationById(
+  userId: string,
+  organizationId: string,
+) {
+  const organization = await prisma.organization.findFirst({
+    where: {
+      id: organizationId,
+      memberships: {
+        some: {
+          userId,
+          role: "OWNER",
+        },
+      },
+    },
+  });
+
+  if (!organization) {
+    throw new Error("Organization not found or permission denied");
+  }
+
+  return prisma.organization.delete({
+    where: {
+      id: organizationId,
+    },
+  });
+}

@@ -1,8 +1,10 @@
 import { generateSlug } from "../utils/generateSlug.js";
 import {
   createOrganizationWithOwner,
+  deleteOrganizationById,
   getOrganizationById,
   getOrganizationsByUserId,
+  updateOrganizationById,
 } from "../repositories/organization.repository.js";
 import { Prisma } from "@prisma/client";
 
@@ -55,7 +57,42 @@ export async function getOrganizationService(
   try {
     const organization = await getOrganizationById(userId, organizationId);
     if (!organization) {
-      throw new Error("No organizations found for the user");
+      throw new Error("Organization not found for the user");
+    }
+    return organization;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateOrganizationService(
+  userId: string,
+  organizationId: string,
+  name: string,
+) {
+  try {
+    const organization = await updateOrganizationById(
+      userId,
+      organizationId,
+      name,
+    );
+    if (!organization) {
+      throw new Error("Organization not found for the user");
+    }
+    return organization;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteOrganizationService(
+  userId: string,
+  organizationId: string,
+) {
+  try {
+    const organization = await deleteOrganizationById(userId, organizationId);
+    if (!organization) {
+      throw new Error("Organization not found for the user");
     }
     return organization;
   } catch (error) {
