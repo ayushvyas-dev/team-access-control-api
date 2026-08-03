@@ -7,7 +7,7 @@ import {
   updateMembership,
 } from "./membership.controller.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
-import { memberIdSchema, roleSchema } from "./membership.validation.js";
+import { membershipParamsSchema, roleSchema } from "./membership.validation.js";
 import { validate } from "../../middlewares/validate.middleware.js";
 import { organizationIdSchema } from "../organizations/organization.validation.js";
 
@@ -16,14 +16,14 @@ const membershipRouter = Router();
 membershipRouter.get(
   "/organizations/:organizationId/members",
   authenticate,
-  validate({ params: memberIdSchema }),
+  validate({ params: organizationIdSchema }),
   getMemberships,
 );
 
 membershipRouter.get(
   "/organizations/:organizationId/members/:memberId",
   authenticate,
-  validate({ params: memberIdSchema }),
+  validate({ params: membershipParamsSchema }),
   getMembership,
 );
 
@@ -35,17 +35,17 @@ membershipRouter.patch(
 );
 
 membershipRouter.delete(
-  "/organizations/:organizationId/members/:memberId",
+  "/organizations/:organizationId/members/me",
   authenticate,
-  validate({ params: memberIdSchema }),
-  deleteMembership,
+  validate({ params: organizationIdSchema }),
+  deleteCurrentUserMembership,
 );
 
 membershipRouter.delete(
-  "/organizations/:organizationId/members/me",
+  "/organizations/:organizationId/members/:memberId",
   authenticate,
-  validate({ params: memberIdSchema }),
-  deleteCurrentUserMembership,
+  validate({ params: membershipParamsSchema }),
+  deleteMembership,
 );
 
 export default membershipRouter;

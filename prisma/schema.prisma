@@ -19,6 +19,7 @@ model User {
   sessions    Session[]
   otps        Otp[]
   memberships Membership[]
+  invitations Invitation[]
 
   @@index([deletedAt])
   @@map("users")
@@ -91,6 +92,7 @@ model Organization {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   memberships Membership[]
+  invitations Invitation[]
 
   @@map("organizations")
 }
@@ -115,4 +117,40 @@ enum Role {
   OWNER
   ADMIN
   MEMBER
+}
+
+model Invitation {
+  id String @id @default(uuid()) @db.Uuid
+
+  organizationId String @map("organization_id") @db.Uuid
+  invitedById    String @map("invited_by_id") @db.Uuid
+
+  email String @db.VarChar(255)
+
+  role Role
+
+  token String @unique @db.VarChar(255)
+
+  status InvitationStatus @default(PENDING)
+
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedBy    User         @relation(fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([email])
+  @@index([token])
+  @@index([expiresAt])
+  @@map("invitations")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
 }

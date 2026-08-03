@@ -96,6 +96,7 @@ export async function deleteMembership(
   try {
     const organizationId = req.params.organizationId as string;
     const memberId = req.params.memberId as string;
+
     if (!organizationId || !memberId) {
       throw new Error("Organization ID and Member ID are required");
     }

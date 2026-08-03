@@ -20,3 +20,24 @@ export async function sendVerificationEmail(
     throw new Error(`Failed to send verification email: ${error.message}`);
   }
 }
+
+export async function sendInvitationEmail(
+  email: string,
+  organizationName: string,
+  invitationLink: string,
+): Promise<void> {
+  const { error } = await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: email,
+    subject: "You have been invited to join an organization",
+    html: `
+      <h2>You have been invited to join ${organizationName}</h2>
+      <p>Click the link below to accept the invitation:</p>
+      <a href="${invitationLink}" target="_blank">Accept Invitation</a>
+    `,
+  });
+
+  if (error) {
+    throw new Error(`Failed to send invitation email: ${error.message}`);
+  }
+}

@@ -64,11 +64,17 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     });
 
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: new Date(Date.now() + 10 * 60 * 1000),
+    });
+
     return res.status(200).json({
       success: true,
       message: "User logged in successfully",
       user,
-      accessToken,
     });
   } catch (error) {
     return next(error);
@@ -91,9 +97,16 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     });
 
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: new Date(Date.now() + 10 * 60 * 1000),
+    });
+
     return res.status(200).json({
       success: true,
-      accessToken: newAccessToken,
+      message: "Token refreshed successfully",
     });
   } catch (error) {
     return next(error);

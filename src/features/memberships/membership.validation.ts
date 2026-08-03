@@ -5,6 +5,7 @@ export const roleSchema = z.object({
   role: z.nativeEnum(Role),
 });
 
-export const memberIdSchema = z.object({
+export const membershipParamsSchema = z.object({
+  organizationId: z.uuid(),
   memberId: z.uuid(),
 });
