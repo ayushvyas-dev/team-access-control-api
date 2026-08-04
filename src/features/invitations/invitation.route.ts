@@ -1,10 +1,15 @@
 import { Router } from "express";
-import { createInvitation } from "./invitation.controller.js";
+import {
+  createInvitation,
+  deleteInvitation,
+  getInvitations,
+} from "./invitation.controller.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
 import { validate } from "../../middlewares/validate.middleware.js";
 import {
   invitationParamSchema,
   invitationBodySchema,
+  invitationDeleteParamSchema,
 } from "./invitation.validation.js";
 
 const invitationRouter = Router();
@@ -16,15 +21,19 @@ invitationRouter.post(
   createInvitation,
 );
 
-// invitationRouter.get(
-//   "/organizations/:organizationId/invitations",
-//   getInvitations,
-// );
+invitationRouter.get(
+  "/organizations/:organizationId/invitations",
+  authenticate,
+  validate({ params: invitationParamSchema }),
+  getInvitations,
+);
 
-// invitationRouter.delete(
-//   "/organizations/:organizationId/invitations/:invitationId",
-//   deleteInvitation,
-// );
+invitationRouter.delete(
+  "/organizations/:organizationId/invitations/:invitationId",
+  authenticate,
+  validate({ params: invitationDeleteParamSchema }),
+  deleteInvitation,
+);
 
 // invitationRouter.post("/invitations/:token/accept", acceptInvitation);
 

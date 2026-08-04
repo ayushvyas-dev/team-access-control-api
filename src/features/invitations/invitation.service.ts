@@ -4,7 +4,10 @@ import crypto from "crypto";
 import { hashToken } from "../../utils/token.js";
 import {
   createInvitationByOrgAndEmail,
+  deleteInvitationByOrgAndInvitationId,
+  getAllOrgInvitations,
   getInvitationByOrgAndEmail,
+  getInvitationByOrgAndInvitationId,
   getMembershipByOrgAndEmail,
 } from "./invitation.repository.js";
 import { Role } from "@prisma/client";
@@ -93,4 +96,38 @@ export async function createInvitationService(
     expiresAt: invitation.expiresAt,
     createdAt: invitation.createdAt,
   };
+}
+
+export async function getInvitationsService(organizationId: string) {
+  if (!organizationId) {
+    throw new Error("Organization ID is required");
+  }
+
+  const invitations = await getAllOrgInvitations(organizationId);
+  return invitations;
+}
+
+export async function deleteInvitationService(
+  organizationId: string,
+  invitationId: string,
+) {
+  if (!organizationId) {
+    throw new Error("Organization ID is required");
+  }
+  if (!invitationId) {
+    throw new Error("Invitation ID is required");
+  }
+
+  const invitation = await getInvitationByOrgAndInvitationId(
+    organizationId,
+    invitationId,
+  );
+
+  if (!invitation) {
+    throw new Error("Invitation not found");
+  }
+
+  await deleteInvitationByOrgAndInvitationId(organizationId, invitationId);
+
+  return invitation;
 }

@@ -9,3 +9,8 @@ export const invitationBodySchema = z.object({
   email: z.string().email(),
   role: z.nativeEnum(Role),
 });
+
+export const invitationDeleteParamSchema = z.object({
+  organizationId: z.string().uuid(),
+  invitationId: z.string().uuid(),
+});

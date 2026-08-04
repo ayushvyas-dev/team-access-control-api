@@ -13,6 +13,18 @@ export async function getInvitationByOrgAndEmail(
   });
 }
 
+export async function getInvitationByOrgAndInvitationId(
+  organizationId: string,
+  invitationId: string,
+) {
+  return prisma.invitation.findFirst({
+    where: {
+      organizationId,
+      id: invitationId,
+    },
+  });
+}
+
 export async function createInvitationByOrgAndEmail(
   organizationId: string,
   invitedById: string,
@@ -33,10 +45,14 @@ export async function createInvitationByOrgAndEmail(
   });
 }
 
-export async function deleteInvitation(id: string) {
+export async function deleteInvitationByOrgAndInvitationId(
+  organizationId: string,
+  invitationId: string,
+) {
   return prisma.invitation.delete({
     where: {
-      id,
+      organizationId,
+      id: invitationId,
     },
   });
 }
@@ -51,6 +67,21 @@ export async function getMembershipByOrgAndEmail(
       user: {
         email,
       },
+    },
+  });
+}
+
+export async function getAllOrgInvitations(organizationId: string) {
+  return prisma.invitation.findMany({
+    where: {
+      organizationId,
+    },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      expiresAt: true,
+      createdAt: true,
     },
   });
 }

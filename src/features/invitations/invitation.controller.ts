@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { createInvitationService } from "./invitation.service.js";
+import {
+  createInvitationService,
+  deleteInvitationService,
+  getInvitationsService,
+} from "./invitation.service.js";
 
 export async function createInvitation(
   req: Request,
@@ -34,53 +38,50 @@ export async function createInvitation(
   }
 }
 
-// export async function getInvitations(
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) {
-//   try {
-//     const organizationId = req.params.organizationId;
-//     if (!organizationId) {
-//       throw new Error("Organization ID is required");
-//     }
+export async function getInvitations(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const organizationId = req.params.organizationId as string;
 
-//     const invitations = await getInvitationsService(organizationId);
-//     return res.status(200).json({
-//       success: true,
-//       message: "Invitations retrieved successfully",
-//       data: invitations,
-//     });
-//   } catch (error) {
-//     return next(error);
-//   }
-// }
+    const invitations = await getInvitationsService(organizationId);
+    return res.status(200).json({
+      success: true,
+      message: "Invitations retrieved successfully",
+      data: invitations,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
 
-// export async function deleteInvitation(
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) {
-//   try {
-//     const organizationId = req.params.organizationId;
-//     const invitationId = req.params.invitationId;
-//     if (!organizationId) {
-//       throw new Error("Organization ID is required");
-//     }
-//     if (!invitationId) {
-//       throw new Error("Invitation ID is required");
-//     }
+export async function deleteInvitation(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const organizationId = req.params.organizationId as string;
+    const invitationId = req.params.invitationId as string;
+    if (!organizationId) {
+      throw new Error("Organization ID is required");
+    }
+    if (!invitationId) {
+      throw new Error("Invitation ID is required");
+    }
 
-//     await deleteInvitationService(organizationId, invitationId);
+    await deleteInvitationService(organizationId, invitationId);
 
-//     return res.status(200).json({
-//       success: true,
-//       message: "Invitation deleted successfully",
-//     });
-//   } catch (error) {
-//     return next(error);
-//   }
-// }
+    return res.status(200).json({
+      success: true,
+      message: "Invitation deleted successfully",
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
 
 // export async function acceptInvitation(
 //   req: Request,
