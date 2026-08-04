@@ -85,3 +85,47 @@ export async function getAllOrgInvitations(organizationId: string) {
     },
   });
 }
+
+export async function findInvitationByToken(token: string) {
+  return prisma.invitation.findFirst({
+    where: {
+      token,
+    },
+  });
+}
+
+export async function createMebershipFromInvitation(
+  organizationId: string,
+  userId: string,
+  role: Role,
+) {
+  return prisma.membership.create({
+    data: {
+      organizationId,
+      userId,
+      role,
+    },
+  });
+}
+
+export async function acceptInvitationById(invitationId: string) {
+  return prisma.invitation.update({
+    where: {
+      id: invitationId,
+    },
+    data: {
+      status: "ACCEPTED",
+    },
+  });
+}
+
+export async function rejectInvitationById(invitationId: string) {
+  return prisma.invitation.update({
+    where: {
+      id: invitationId,
+    },
+    data: {
+      status: "REJECTED",
+    },
+  });
+}

@@ -14,3 +14,10 @@ export const invitationDeleteParamSchema = z.object({
   organizationId: z.string().uuid(),
   invitationId: z.string().uuid(),
 });
+
+export const invitationTokenParamsSchema = z.object({
+  token: z
+    .string()
+    .length(64, "Invalid invitation token")
+    .regex(/^[a-f0-9]+$/, "Invalid invitation token"),
+});
