@@ -10,6 +10,7 @@ import { notFoundMiddleware } from "./middlewares/notFound.middleware.js";
 import userRouter from "./features/users/user.route.js";
 import membershipRouter from "./features/memberships/membership.route.js";
 import invitationRouter from "./features/invitations/invitation.route.js";
+import sessionRouter from "./features/sessions/session.route.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/v1/organizations", organizationRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1", membershipRouter);
 app.use("/api/v1", invitationRouter);
+app.use("/api/v1/sessions", sessionRouter);
 
 // Global error handler — must have 4 parameters to be recognised by Express
 // it must be at the last just before response is sent to the client

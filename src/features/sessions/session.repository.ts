@@ -99,3 +99,40 @@ export const revokeAllUserSessions = async (userId: string) => {
     },
   });
 };
+
+export async function findAllSessionById(userId: string) {
+  return prisma.session.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
+
+export async function deleteSessionById(userId: string, sessionId: string) {
+  return prisma.session.deleteMany({
+    where: {
+      id: sessionId,
+      userId,
+    },
+  });
+}
+
+export async function deleteAllSessionsByUserId(userId: string) {
+  return prisma.session.deleteMany({
+    where: {
+      userId,
+    },
+  });
+}
+
+export async function findSessionById(userId: string, sessionId: string) {
+  return prisma.session.findFirst({
+    where: {
+      id: sessionId,
+      userId,
+    },
+  });
+}
