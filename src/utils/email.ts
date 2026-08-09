@@ -1,23 +1,27 @@
-import { resend } from "../config/resend.config.js";
+import { emailTransporter } from "../config/nodemailer.config.js";
+import { config } from "../config/env.config.js";
 
 export async function sendVerificationEmail(
   email: string,
   otp: string,
 ): Promise<void> {
-  const { error } = await resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: email,
-    subject: "Verify your email",
-    html: `
+  try {
+    await emailTransporter.sendMail({
+      from: `"Team Access Control" <${config.SMTP_USER}>`,
+      to: email,
+      subject: "Verify your email",
+      text: `Your verification OTP is ${otp}. It expires in 10 minutes.`,
+      html: `
       <h2>Verify your email</h2>
-      <p>Your verification code is:</p>
+      <p>Your verification OTP is:</p>
       <h1>${otp}</h1>
-      <p>This code expires in 10 minutes.</p>
+      <p>This OTP expires in 10 minutes.</p>
     `,
-  });
-
-  if (error) {
-    throw new Error(`Failed to send verification email: ${error.message}`);
+    });
+  } catch (error) {
+    throw new Error("Failed to send verification email", {
+      cause: error,
+    });
   }
 }
 
@@ -26,18 +30,20 @@ export async function sendInvitationEmail(
   organizationName: string,
   invitationLink: string,
 ): Promise<void> {
-  const { error } = await resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: email,
-    subject: "You have been invited to join an organization",
-    html: `
+  try {
+    await emailTransporter.sendMail({
+      from: `"Team Access Control" <${config.SMTP_USER}>`,
+      to: email,
+      subject: "You have been invited to join an organization",
+      html: `
       <h2>You have been invited to join ${organizationName}</h2>
       <p>Click the link below to accept the invitation:</p>
       <a href="${invitationLink}" target="_blank">Accept Invitation</a>
     `,
-  });
-
-  if (error) {
-    throw new Error(`Failed to send invitation email: ${error.message}`);
+    });
+  } catch (error) {
+    throw new Error("Failed to send invitation email", {
+      cause: error,
+    });
   }
 }
