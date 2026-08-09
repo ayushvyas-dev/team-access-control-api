@@ -6,7 +6,7 @@ import {
   getInvitations,
   rejectInvitation,
 } from "./invitation.controller.js";
-import { authenticate } from "../../middlewares/auth.middleware.js";
+import { authenticate } from "../../middlewares/authentication.middleware.js";
 import { validate } from "../../middlewares/validate.middleware.js";
 import {
   invitationParamSchema,
@@ -14,12 +14,17 @@ import {
   invitationDeleteParamSchema,
   invitationTokenParamsSchema,
 } from "./invitation.validation.js";
+import { requireOrgMembership } from "../../middlewares/organization.middleware.js";
+import { requirePermission } from "../../middlewares/authorization.middleware.js";
+import { permissions } from "../../config/permissions.config.js";
 
 const invitationRouter = Router();
 
 invitationRouter.post(
   "/organizations/:organizationId/invitations",
   authenticate,
+  requireOrgMembership,
+  requirePermission(permissions.INVITATION_CREATE),
   validate({ params: invitationParamSchema, body: invitationBodySchema }),
   createInvitation,
 );
@@ -27,6 +32,8 @@ invitationRouter.post(
 invitationRouter.get(
   "/organizations/:organizationId/invitations",
   authenticate,
+  requireOrgMembership,
+  requirePermission(permissions.INVITATION_READ),
   validate({ params: invitationParamSchema }),
   getInvitations,
 );
@@ -34,6 +41,8 @@ invitationRouter.get(
 invitationRouter.delete(
   "/organizations/:organizationId/invitations/:invitationId",
   authenticate,
+  requireOrgMembership,
+  requirePermission(permissions.INVITATION_DELETE),
   validate({ params: invitationDeleteParamSchema }),
   deleteInvitation,
 );

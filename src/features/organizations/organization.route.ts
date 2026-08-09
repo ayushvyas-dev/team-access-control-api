@@ -11,8 +11,11 @@ import {
   getOrganizations,
   updateOrganization,
 } from "./organization.controller.js";
-import { authenticate } from "../../middlewares/auth.middleware.js";
+import { authenticate } from "../../middlewares/authentication.middleware.js";
 import { validate } from "../../middlewares/validate.middleware.js";
+import { requireOrgMembership } from "../../middlewares/organization.middleware.js";
+import { permissions } from "../../config/permissions.config.js";
+import { requirePermission } from "../../middlewares/authorization.middleware.js";
 
 const organizationRouter = Router();
 
@@ -35,6 +38,8 @@ organizationRouter.get(
 organizationRouter.patch(
   "/:organizationId",
   authenticate,
+  requireOrgMembership,
+  requirePermission(permissions.ORGANIZATION_UPDATE),
   validate({ params: organizationIdSchema, body: createOrganizationSchema }),
   updateOrganization,
 );
@@ -42,6 +47,8 @@ organizationRouter.patch(
 organizationRouter.delete(
   "/:organizationId",
   authenticate,
+  requireOrgMembership,
+  requirePermission(permissions.ORGANIZATION_DELETE),
   validate({ params: organizationIdSchema }),
   deleteOrganization,
 );

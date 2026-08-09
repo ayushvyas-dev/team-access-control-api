@@ -67,7 +67,6 @@ export async function updateOrganizationById(
       memberships: {
         some: {
           userId,
-          role: "OWNER",
         },
       },
     },
@@ -97,7 +96,6 @@ export async function deleteOrganizationById(
       memberships: {
         some: {
           userId,
-          role: "OWNER",
         },
       },
     },
