@@ -22,6 +22,6 @@ export function requirePermission(permission: string) {
       });
     }
 
-    next();
+    return next();
   };
 }

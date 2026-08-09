@@ -9,9 +9,6 @@ import {
 import { Prisma } from "@prisma/client";
 
 export async function createOrganizationService(name: string, userId: string) {
-  // if (!userId) {
-  //         throw new Error("User not found");
-  //     }
   const MAX_ATTEMPTS = 3;
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {

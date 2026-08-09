@@ -12,9 +12,6 @@ describe("POST /auth/register", async () => {
       password: "password",
     });
 
-    console.log(res.status);
-    console.log(res.body);
-
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
   });
