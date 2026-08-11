@@ -12,6 +12,9 @@ import membershipRouter from "./features/memberships/membership.route.js";
 import invitationRouter from "./features/invitations/invitation.route.js";
 import sessionRouter from "./features/sessions/session.route.js";
 
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger.config.js";
+
 const app = express();
 
 app.use(express.json());
@@ -24,6 +27,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1", membershipRouter);
 app.use("/api/v1", invitationRouter);
 app.use("/api/v1/sessions", sessionRouter);
+app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Global error handler — must have 4 parameters to be recognised by Express
 // it must be at the last just before response is sent to the client
