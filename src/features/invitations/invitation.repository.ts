@@ -94,7 +94,7 @@ export async function findInvitationByToken(token: string) {
   });
 }
 
-export async function createMebershipFromInvitation(
+export async function createMembershipFromInvitation(
   organizationId: string,
   userId: string,
   role: Role,

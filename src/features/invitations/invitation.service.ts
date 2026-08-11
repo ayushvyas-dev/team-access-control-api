@@ -12,7 +12,7 @@ import {
   getInvitationByOrgAndInvitationId,
   getMembershipByOrgAndEmail,
   rejectInvitationById,
-  createMebershipFromInvitation,
+  createMembershipFromInvitation,
 } from "./invitation.repository.js";
 import { Role } from "@prisma/client";
 import { sendInvitationEmail } from "../../utils/email.js";
@@ -170,9 +170,9 @@ export async function acceptInvitationService(token: string, userId: string) {
     throw new Error("Invitation already accepted or rejected");
   }
 
-  await createMebershipFromInvitation(
+  await createMembershipFromInvitation(
     invitation.organizationId,
-    invitation.invitedById,
+    userId,
     invitation.role,
   );
 
