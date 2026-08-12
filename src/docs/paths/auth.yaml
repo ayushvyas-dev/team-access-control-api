@@ -1,0 +1,164 @@
+register:
+  post:
+    summary: Register a new user
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - email
+              - password
+            properties:
+              name:
+                type: string
+                example: Ayush
+              email:
+                type: string
+                format: email
+                example: ayush@example.com
+              password:
+                type: string
+                format: password
+                example: Password@123
+    responses:
+      "201":
+        description: User registered successfully
+      "400":
+        description: Invalid request
+      "409":
+        description: User already exists
+
+login:
+  post:
+    summary: Login user
+    description: Authenticates a user using their email and password.
+    tags:
+      - Authentication
+    security: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+                example: user@example.com
+              password:
+                type: string
+                format: password
+                example: Password@123
+
+    responses:
+      "200":
+        description: Login successful. Access and refresh tokens are set as HTTP-only cookies.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Login successful
+
+      "400":
+        description: Invalid request body.
+
+      "401":
+        description: Invalid credentials.
+
+      "403":
+        description: Email is not verified.
+
+verifyEmail:
+  post:
+    summary: Verify user email
+    description: Verifies a user's email address using the OTP sent to their email.
+    tags:
+      - Authentication
+    security: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - otp
+            properties:
+              email:
+                type: string
+                format: email
+                example: user@example.com
+              otp:
+                type: string
+                pattern: "^[0-9]{6}$"
+                example: "123456"
+
+    responses:
+      "200":
+        description: Email verified successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Email verified successfully
+
+      "400":
+        description: Invalid or expired OTP.
+
+      "404":
+        description: User or OTP not found.
+
+refreshToken:
+  post:
+    summary: Refresh authentication tokens
+    description: |
+      Generates a new access token and refresh token using the refresh token
+      stored in the HTTP-only refreshToken cookie. The new tokens are returned
+      as HTTP-only cookies.
+    tags:
+      - Authentication
+    security:
+      - refreshCookieAuth: []
+
+    responses:
+      "200":
+        description: Tokens refreshed successfully. New access and refresh tokens are set as HTTP-only cookies.
+        headers:
+          Set-Cookie:
+            description: New accessToken and refreshToken cookies.
+            schema:
+              type: string
+              example: accessToken=eyJhbGciOiJIUzI1Ni...; HttpOnly; Secure; SameSite=Strict
+
+      "401":
+        description: Refresh token is missing, invalid, expired, or revoked.
+
+      "403":
+        description: Refresh token is not authorized.
+
+      "500":
+        description: Internal server error.

@@ -1,0 +1,59 @@
+openapi: 3.0.3
+
+info:
+  title: Team Access Control API
+  version: 1.0.0
+  description: API for team access control and organization management.
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: Authentication endpoints
+  - name: Organizations
+    description: Organization management
+  - name: Memberships
+    description: Organization membership management
+  - name: Invitations
+    description: Organization invitations
+  - name: Sessions
+    description: Session management
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+paths:
+  /api/v1/auth/register:
+    $ref: "./paths/auth.yaml#/register"
+
+  /api/v1/auth/verify-email:
+    $ref: "./paths/auth.yaml#/verifyEmail"
+
+  /api/v1/auth/login:
+    $ref: "./paths/auth.yaml#/login"
+
+  /api/v1/auth/refresh:
+    $ref: "./paths/auth.yaml#/refreshToken"
+
+  /api/v1/organizations:
+    get:
+      $ref: "./paths/organizations.yaml#/getOrganizations/get"
+
+    post:
+      $ref: "./paths/organizations.yaml#/createOrganization/post"
+
+  /api/v1/organizations/{orgId}:
+    get:
+      $ref: "./paths/organizations.yaml#/getOrganization/get"
+
+    patch:
+      $ref: "./paths/organizations.yaml#/updateOrganization/patch"
+
+    delete:
+      $ref: "./paths/organizations.yaml#/deleteOrganization/delete"

@@ -13,7 +13,7 @@ import invitationRouter from "./features/invitations/invitation.route.js";
 import sessionRouter from "./features/sessions/session.route.js";
 
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./config/swagger.config.js";
+import swaggerSpec from "./config/swagger.config.js";
 
 const app = express();
 

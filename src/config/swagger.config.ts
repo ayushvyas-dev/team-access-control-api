@@ -1,23 +1,8 @@
-import swaggerJSDoc from "swagger-jsdoc";
+import path from "node:path";
+import SwaggerParser from "@apidevtools/swagger-parser";
 
-const options: swaggerJSDoc.Options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Team Access Control API",
-      version: "1.0.0",
-      description:
-        "REST API for authentication, organizations, memberships, invitations, and session management.",
-    },
-    servers: [
-      {
-        url: "http://localhost:5000",
-        description: "Local development server",
-      },
-    ],
-  },
+const openApiPath = path.join(process.cwd(), "src/docs/openapi.yaml");
 
-  apis: ["./src/**/*.ts"],
-};
+const swaggerSpec = await SwaggerParser.bundle(openApiPath);
 
-export const swaggerSpec = swaggerJSDoc(options);
+export default swaggerSpec;
