@@ -56,6 +56,45 @@ authRouter.post(
   verifyEmail,
 );
 
+/**
+ * @openapi
+ * /api/v1/auth/login:
+ *   post:
+ *     summary: Login user
+ *     description: Authenticates a verified user using email and password and creates a new session.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: Password@123
+ *     responses:
+ *       200:
+ *         description: Login successful. Access and refresh tokens are set as HTTP-only cookies.
+ *       400:
+ *         description: Invalid request body.
+ *       401:
+ *         description: Invalid email or password.
+ *       403:
+ *         description: Email is not verified.
+ *       404:
+ *         description: User not found.
+ */
+
 authRouter.post("/login", validate({ body: loginUserSchema }), login);
 
 authRouter.post("/refresh", refresh);
