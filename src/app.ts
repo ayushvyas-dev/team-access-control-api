@@ -15,14 +15,25 @@ import sessionRouter from "./features/sessions/session.route.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.config.js";
 
+import {
+  genericLimiter,
+  authLimiter,
+  organizationLimiter,
+  rateLimit,
+} from "./middlewares/rate-limit/index.js";
+
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/v1/health", healthRouter);
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/organizations", organizationRouter);
+app.use("/api/v1/auth", rateLimit(authLimiter), authRouter);
+app.use(
+  "/api/v1/organizations",
+  rateLimit(organizationLimiter),
+  organizationRouter,
+);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1", membershipRouter);
 app.use("/api/v1", invitationRouter);
