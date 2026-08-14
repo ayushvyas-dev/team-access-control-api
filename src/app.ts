@@ -15,6 +15,8 @@ import sessionRouter from "./features/sessions/session.route.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.config.js";
 
+import loggerMiddleware from "./middlewares/logger.middleware.js";
+
 import {
   genericLimiter,
   authLimiter,
@@ -26,6 +28,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+// Add the logger middleware to log incoming requests
+app.use(loggerMiddleware);
 
 app.use("/api/v1/health", healthRouter);
 app.use("/api/v1/auth", rateLimit(authLimiter), authRouter);

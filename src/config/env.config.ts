@@ -17,6 +17,7 @@ const envSchema = z.object({
   REFRESH_TOKEN_EXPIRES_DAYS: z.string().default("30"),
   SMTP_USER: z.string().email(),
   SMTP_PASSWORD: z.string(),
+  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
