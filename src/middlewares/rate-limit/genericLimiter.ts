@@ -1,5 +1,5 @@
 import { Ratelimit } from "@upstash/ratelimit";
-import { redis } from "../../config/redis.config.js";
+import { redis } from "../../config/rateLimitRedis.config.js";
 
 export const genericLimiter = new Ratelimit({
   redis,

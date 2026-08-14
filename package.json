@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node src/server.js",
-    "test": "tsx scripts/test.ts"
+    "test": "tsx scripts/test.ts",
+    "worker": "tsx src/workers/email.worker.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,9 +20,11 @@
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.2",
     "bcryptjs": "^3.0.3",
+    "bullmq": "^6.1.1",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^9.0.5",
     "slugify": "^1.6.9",

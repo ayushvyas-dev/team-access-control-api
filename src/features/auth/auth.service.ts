@@ -14,9 +14,9 @@ import {
   createSession,
   findSessionByRefreshTokenHash,
   rotateRefreshToken,
-} from "../../features/sessions/session.repository.js";
+} from "../sessions/session.repository.js";
 
-import { sendVerificationEmail } from "../../utils/email.js";
+import { emailQueue } from "../../queues/email.queue.js";
 
 const REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000;
 
@@ -45,7 +45,10 @@ export async function registerUser({
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     await createOtp({ userId: user.id, otpHash, expiresAt });
-    await sendVerificationEmail(email, otp);
+    await emailQueue.add("send-verification-email", {
+      email,
+      otp,
+    });
 
     return user;
   } catch (error) {
