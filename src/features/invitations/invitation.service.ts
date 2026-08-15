@@ -6,7 +6,6 @@ import {
   acceptInvitationById,
   createInvitationByOrgAndEmail,
   deleteInvitationByOrgAndInvitationId,
-  findInvitationByToken,
   getAllOrgInvitations,
   getInvitationByOrgAndEmail,
   getInvitationByOrgAndInvitationId,
@@ -14,6 +13,7 @@ import {
   rejectInvitationById,
   createMembershipFromInvitation,
   getUserInvitations,
+  findInvitationById,
 } from "./invitation.repository.js";
 import { Role } from "@prisma/client";
 import { sendInvitationEmail } from "../../utils/email.js";
@@ -153,12 +153,15 @@ export async function deleteInvitationService(
   return invitation;
 }
 
-export async function acceptInvitationService(token: string, userId: string) {
-  if (!token) {
-    throw new Error("Token is required");
-  }
+export async function acceptInvitationService(
+  userId: string,
+  invitationId: string,
+) {
   if (!userId) {
     throw new Error("Unauthorized");
+  }
+  if (!invitationId) {
+    throw new Error("Invitation ID is required");
   }
 
   const user = await getUserById(userId);
@@ -166,9 +169,7 @@ export async function acceptInvitationService(token: string, userId: string) {
     throw new Error("User not found");
   }
 
-  const invitationHash = hashToken(token);
-
-  const invitation = await findInvitationByToken(invitationHash);
+  const invitation = await findInvitationById(invitationId);
 
   if (!invitation) {
     throw new Error("Invitation not found");
@@ -197,21 +198,23 @@ export async function acceptInvitationService(token: string, userId: string) {
   return inviteResult;
 }
 
-export async function rejectInvitationService(token: string, userId: string) {
-  if (!token) {
-    throw new Error("Token is required");
-  }
+export async function rejectInvitationService(
+  userId: string,
+  invitationId: string,
+) {
   if (!userId) {
     throw new Error("Unauthorized");
+  }
+  if (!invitationId) {
+    throw new Error("Invitation ID is required");
   }
 
   const user = await getUserById(userId);
   if (!user) {
     throw new Error("User not found");
   }
-  const invitationHash = hashToken(token);
 
-  const invitation = await findInvitationByToken(invitationHash);
+  const invitation = await findInvitationById(invitationId);
 
   if (!invitation) {
     throw new Error("Invitation not found");

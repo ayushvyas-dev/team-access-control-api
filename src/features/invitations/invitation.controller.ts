@@ -109,10 +109,10 @@ export async function acceptInvitation(
   next: NextFunction,
 ) {
   try {
-    const token = req.params.token as string;
+    const invitationId = req.params.invitationId as string;
     const userId = req.user?.id as string;
 
-    await acceptInvitationService(token, userId);
+    await acceptInvitationService(userId, invitationId);
 
     return res.status(200).json({
       success: true,
@@ -129,10 +129,10 @@ export async function rejectInvitation(
   next: NextFunction,
 ) {
   try {
-    const token = req.params.token as string;
+    const invitationId = req.params.invitationId as string;
     const userId = req.user?.id as string;
 
-    await rejectInvitationService(token, userId);
+    await rejectInvitationService(userId, invitationId);
 
     return res.status(200).json({
       success: true,

@@ -13,7 +13,7 @@ import {
   invitationParamSchema,
   invitationBodySchema,
   invitationDeleteParamSchema,
-  invitationTokenParamsSchema,
+  invitationIdParamsSchema,
 } from "./invitation.validation.js";
 import { requireOrgMembership } from "../../middlewares/organization.middleware.js";
 import { requirePermission } from "../../middlewares/authorization.middleware.js";
@@ -51,16 +51,16 @@ invitationRouter.delete(
 );
 
 invitationRouter.post(
-  "/invitations/:token/accept",
+  "/invitations/:invitationId/accept",
   authenticate,
-  validate({ params: invitationTokenParamsSchema }),
+  validate({ params: invitationIdParamsSchema }),
   acceptInvitation,
 );
 
 invitationRouter.post(
-  "/invitations/:token/reject",
+  "/invitations/:invitationId/reject",
   authenticate,
-  validate({ params: invitationTokenParamsSchema }),
+  validate({ params: invitationIdParamsSchema }),
   rejectInvitation,
 );
 

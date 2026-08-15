@@ -103,10 +103,10 @@ export async function getAllOrgInvitations(organizationId: string) {
   });
 }
 
-export async function findInvitationByToken(token: string) {
+export async function findInvitationById(invitationId: string) {
   return prisma.invitation.findFirst({
     where: {
-      token,
+      id: invitationId,
     },
   });
 }
