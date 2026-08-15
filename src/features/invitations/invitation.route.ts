@@ -4,6 +4,7 @@ import {
   createInvitation,
   deleteInvitation,
   getInvitations,
+  getUserInvitations,
   rejectInvitation,
 } from "./invitation.controller.js";
 import { authenticate } from "../../middlewares/authentication.middleware.js";
@@ -19,6 +20,8 @@ import { requirePermission } from "../../middlewares/authorization.middleware.js
 import { permissions } from "../../config/permissions.config.js";
 
 const invitationRouter = Router();
+
+invitationRouter.get("/invitations", authenticate, getUserInvitations);
 
 invitationRouter.post(
   "/organizations/:organizationId/invitations",

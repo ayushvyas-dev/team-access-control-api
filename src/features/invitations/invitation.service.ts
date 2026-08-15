@@ -13,11 +13,27 @@ import {
   getMembershipByOrgAndEmail,
   rejectInvitationById,
   createMembershipFromInvitation,
+  getUserInvitations,
 } from "./invitation.repository.js";
 import { Role } from "@prisma/client";
 import { sendInvitationEmail } from "../../utils/email.js";
 import { config } from "../../config/env.config.js";
 import { getUserById } from "../auth/auth.repository.js";
+
+export async function getUserInvitationsService(userId: string) {
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const email = user.email;
+
+  const invitations = await getUserInvitations(email);
+  return invitations;
+}
 
 export async function createInvitationService(
   organizationId: string,
