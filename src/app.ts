@@ -16,6 +16,8 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.config.js";
 
 import loggerMiddleware from "./middlewares/logger.middleware.js";
+import cors from "cors";
+import { config } from "./config/env.config.js";
 
 import {
   genericLimiter,
@@ -26,6 +28,12 @@ import {
 
 const app = express();
 
+app.use(
+  cors({
+    origin: config.FRONTEND_URL,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 // Add the logger middleware to log incoming requests
