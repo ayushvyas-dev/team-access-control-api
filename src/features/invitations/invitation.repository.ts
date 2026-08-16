@@ -1,19 +1,31 @@
 import prisma from "../../db/prisma.js";
 import { Role } from "@prisma/client";
 
-export async function getUserInvitations(email: string) {
+export async function getUserInvitations(userEmail: string) {
   return prisma.invitation.findMany({
     where: {
-      email: email,
-      status: "PENDING",
+      email: userEmail,
     },
     select: {
       id: true,
-      organizationId: true,
-      email: true,
       role: true,
+      status: true,
       expiresAt: true,
       createdAt: true,
+
+      organization: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+
+      invitedBy: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
     },
   });
 }
@@ -56,7 +68,7 @@ export async function createInvitationByOrgAndEmail(
       invitedById,
       email,
       role,
-      token: invitationHash,
+      tokenHash: invitationHash,
       expiresAt,
     },
   });

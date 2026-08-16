@@ -129,7 +129,7 @@ model Invitation {
 
   role Role
 
-  token String @unique @db.VarChar(255)
+  tokenHash String @unique @map("token_hash") @db.VarChar(255)
 
   status InvitationStatus @default(PENDING)
 
@@ -143,7 +143,6 @@ model Invitation {
 
   @@index([organizationId])
   @@index([email])
-  @@index([token])
   @@index([expiresAt])
   @@map("invitations")
 }
