@@ -9,10 +9,6 @@ import {
 import { AppError } from "../../utils/appError.js";
 
 export async function getMembershipsService(organizationId: string) {
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-
   const memberships = await getMembershipsByOrgId(organizationId);
   if (!memberships) {
     throw new AppError(
@@ -27,13 +23,6 @@ export async function getMembershipService(
   organizationId: string,
   memberId: string,
 ) {
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-  if (!memberId) {
-    throw new AppError("Member ID is required", 400);
-  }
-
   const membership = await getMembershipByOrgAndMemberId(
     organizationId,
     memberId,
@@ -52,16 +41,6 @@ export async function updateMembershipService(
   memberId: string,
   role: Role,
 ) {
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-  if (!memberId) {
-    throw new AppError("Member ID is required", 400);
-  }
-  if (!role) {
-    throw new AppError("Role is required", 400);
-  }
-
   const membership = await updateMembershipByOrgAndMemberId(
     organizationId,
     memberId,
@@ -80,13 +59,6 @@ export async function deleteMembershipService(
   organizationId: string,
   memberId: string,
 ) {
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-  if (!memberId) {
-    throw new AppError("Member ID is required", 400);
-  }
-
   const membership = await deleteMembershipByOrgAndMemberId(
     organizationId,
     memberId,
@@ -104,13 +76,6 @@ export async function deleteCurrentUserMembershipService(
   userId: string,
   organizationId: string,
 ) {
-  if (!userId) {
-    throw new AppError("User ID is required", 400);
-  }
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-
   const membership = await deleteCurrentUserMembershipById(
     userId,
     organizationId,

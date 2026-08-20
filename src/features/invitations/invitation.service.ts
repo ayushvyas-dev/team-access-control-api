@@ -22,10 +22,6 @@ import { getUserById } from "../auth/auth.repository.js";
 import { AppError } from "../../utils/appError.js";
 
 export async function getUserInvitationsService(userId: string) {
-  if (!userId) {
-    throw new AppError("Unauthorized", 401);
-  }
-
   const user = await getUserById(userId);
   if (!user) {
     throw new AppError("User not found", 404);
@@ -45,16 +41,6 @@ export async function createInvitationService(
   email: string,
   role: Role,
 ) {
-  if (!userId) {
-    throw new AppError("Unauthorized", 401);
-  }
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-  if (!email || !role) {
-    throw new AppError("Email and role are required", 400);
-  }
-
   const organization = await getOrganizationById(userId, organizationId);
 
   if (!organization) {
@@ -130,10 +116,6 @@ export async function createInvitationService(
 }
 
 export async function getInvitationsService(organizationId: string) {
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-
   const invitations = await getAllOrgInvitations(organizationId);
   if (!invitations) {
     throw new AppError("No invitations found for the organization", 404);
@@ -145,13 +127,6 @@ export async function deleteInvitationService(
   organizationId: string,
   invitationId: string,
 ) {
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-  if (!invitationId) {
-    throw new AppError("Invitation ID is required", 400);
-  }
-
   const invitation = await getInvitationByOrgAndInvitationId(
     organizationId,
     invitationId,
@@ -176,13 +151,6 @@ export async function acceptInvitationService(
   userId: string,
   invitationId: string,
 ) {
-  if (!userId) {
-    throw new AppError("Unauthorized", 401);
-  }
-  if (!invitationId) {
-    throw new AppError("Invitation ID is required", 400);
-  }
-
   const user = await getUserById(userId);
   if (!user) {
     throw new AppError("User not found", 404);
@@ -230,13 +198,6 @@ export async function rejectInvitationService(
   userId: string,
   invitationId: string,
 ) {
-  if (!userId) {
-    throw new AppError("Unauthorized", 401);
-  }
-  if (!invitationId) {
-    throw new AppError("Invitation ID is required", 400);
-  }
-
   const user = await getUserById(userId);
   if (!user) {
     throw new AppError("User not found", 404);

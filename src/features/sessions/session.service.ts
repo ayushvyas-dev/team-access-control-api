@@ -5,9 +5,6 @@ import {
 } from "./session.repository.js";
 
 export async function getAllSessionService(userId: string) {
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
   const sessions = await findAllSessionById(userId);
   if (!sessions) {
     throw new Error("No sessions found for the user");
@@ -16,13 +13,6 @@ export async function getAllSessionService(userId: string) {
 }
 
 export async function deleteSessionService(userId: string, sessionId: string) {
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-  if (!sessionId) {
-    throw new Error("SessionId is required");
-  }
-
   const session = await deleteSessionById(userId, sessionId);
   if (session.count === 0) {
     throw new Error("Session not found or does not belong to the user");
@@ -31,9 +21,6 @@ export async function deleteSessionService(userId: string, sessionId: string) {
 }
 
 export async function deleteAllSessionService(userId: string) {
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
   const sessions = await deleteAllSessionsByUserId(userId);
   if (sessions.count === 0) {
     throw new Error("Session not found or does not belong to the user");

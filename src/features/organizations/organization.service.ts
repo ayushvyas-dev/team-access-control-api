@@ -11,17 +11,8 @@ import { AppError } from "../../utils/appError.js";
 
 export async function createOrganizationService(name: string, userId: string) {
   const MAX_ATTEMPTS = 3;
-
-  if (!name) {
-    throw new AppError("Organization name is required", 400);
-  }
-  if (!userId) {
-    throw new AppError("User ID is required", 400);
-  }
-
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     const slug = generateSlug(name);
-
     try {
       return await createOrganizationWithOwner({
         name,
@@ -44,10 +35,6 @@ export async function createOrganizationService(name: string, userId: string) {
 }
 
 export async function getOrganizationsService(userId: string) {
-  if (!userId) {
-    throw new AppError("User ID is required", 400);
-  }
-
   const organizations = await getOrganizationsByUserId(userId);
   if (!organizations) {
     throw new AppError("No organizations found for the user", 404);
@@ -59,13 +46,6 @@ export async function getOrganizationService(
   userId: string,
   organizationId: string,
 ) {
-  if (!userId) {
-    throw new AppError("User ID is required", 400);
-  }
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-
   const organization = await getOrganizationById(userId, organizationId);
   if (!organization) {
     throw new AppError("Organization not found for the user", 404);
@@ -78,16 +58,6 @@ export async function updateOrganizationService(
   organizationId: string,
   name: string,
 ) {
-  if (!userId) {
-    throw new AppError("User ID is required", 400);
-  }
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-  if (!name) {
-    throw new AppError("Organization name is required", 400);
-  }
-
   const organization = await updateOrganizationById(
     userId,
     organizationId,
@@ -103,13 +73,6 @@ export async function deleteOrganizationService(
   userId: string,
   organizationId: string,
 ) {
-  if (!userId) {
-    throw new AppError("User ID is required", 400);
-  }
-  if (!organizationId) {
-    throw new AppError("Organization ID is required", 400);
-  }
-
   const organization = await deleteOrganizationById(userId, organizationId);
   if (!organization) {
     throw new AppError("Organization not found for the user", 404);
