@@ -1,0 +1,164 @@
+getMe:
+  get:
+    summary: Get current user
+    description: Returns the profile of the currently authenticated user.
+    tags:
+      - Users
+    security:
+      - cookieAuth: []
+
+    responses:
+      "200":
+        description: User fetched successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: User fetched successfully
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: clx123abc456
+                    name:
+                      type: string
+                      example: Ayush Vyas
+                    email:
+                      type: string
+                      format: email
+                      example: ayush@example.com
+                    emailVerified:
+                      type: string
+                      format: date-time
+                      nullable: true
+                      example: "2026-08-13T10:30:00.000Z"
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2026-08-13T10:30:00.000Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2026-08-20T10:30:00.000Z"
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "404":
+        description: User not found.
+
+updateMe:
+  patch:
+    summary: Update current user
+    description: Updates the name of the currently authenticated user.
+    tags:
+      - Users
+    security:
+      - cookieAuth: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: Ayush Vyas
+
+    responses:
+      "200":
+        description: User updated successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: User updated successfully
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: clx123abc456
+                    name:
+                      type: string
+                      example: Ayush Vyas
+                    email:
+                      type: string
+                      format: email
+                      example: ayush@example.com
+                    emailVerified:
+                      type: string
+                      format: date-time
+                      nullable: true
+                      example: "2026-08-13T10:30:00.000Z"
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2026-08-13T10:30:00.000Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2026-08-20T10:30:00.000Z"
+
+      "400":
+        description: Invalid request body.
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "404":
+        description: User not found.
+
+deleteMe:
+  delete:
+    summary: Delete current user
+    description: Soft deletes the account of the currently authenticated user.
+    tags:
+      - Users
+    security:
+      - cookieAuth: []
+
+    responses:
+      "200":
+        description: User deleted successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: User deleted successfully
+                data:
+                  type: object
+                  properties:
+                    deletedAt:
+                      type: string
+                      format: date-time
+                      example: "2026-08-20T10:30:00.000Z"
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "404":
+        description: User not found.

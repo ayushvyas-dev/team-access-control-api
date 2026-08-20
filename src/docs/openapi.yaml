@@ -57,3 +57,12 @@ paths:
 
     delete:
       $ref: "./paths/organizations.yaml#/deleteOrganization/delete"
+  /api/v1/users/me:
+    get:
+      $ref: "./paths/user.yaml#/getMe/get"
+
+    patch:
+      $ref: "./paths/user.yaml#/updateMe/patch"
+
+    delete:
+      $ref: "./paths/user.yaml#/deleteMe/delete"
