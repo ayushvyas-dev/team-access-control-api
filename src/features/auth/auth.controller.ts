@@ -13,7 +13,6 @@ export async function register(
 ) {
   try {
     const { name, email, password } = req.body;
-
     const user = await registerUser({ name, email, password });
 
     return res.status(201).json({
@@ -84,9 +83,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 export async function refresh(req: Request, res: Response, next: NextFunction) {
   try {
     const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-      throw new Error("Refresh token is required");
-    }
+
     const { newAccessToken, newRefreshToken } =
       await refreshAccessToken(refreshToken);
 
@@ -112,31 +109,3 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
     return next(error);
   }
 }
-
-// export async function logoutUser(req: Request, res: Response) {
-//   const refreshToken = req.cookies.refreshToken;
-
-//   if (refreshToken) {
-//     await logoutUser(refreshToken);
-//   }
-
-//   res.clearCookie("accessToken", {
-//     ...cookieOptions,
-//   });
-
-//   res.clearCookie("refreshToken", {
-//     ...cookieOptions,
-//     path: "/api/v1/auth",
-//   });
-
-//   return res.status(200).json({
-//     success: true,
-//     message: "Logged out successfully",
-//   });
-// }
-
-export async function logoutAllUser(req: Request, res: Response) {}
-
-export async function getSessions(req: Request, res: Response) {}
-
-export async function deleteSession(req: Request, res: Response) {}

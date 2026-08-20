@@ -10,8 +10,4 @@ userRouter.patch("/me", authenticate, updateMe);
 
 userRouter.delete("/me", authenticate, deleteMe);
 
-// userRouter.post("/logout", (req, res) => {
-//   res.send("logout endpoint");
-// });
-
 export default userRouter;

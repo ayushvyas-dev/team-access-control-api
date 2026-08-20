@@ -7,9 +7,17 @@ import {
   updateOrganizationById,
 } from "./organization.repository.js";
 import { Prisma } from "@prisma/client";
+import { AppError } from "../../utils/appError.js";
 
 export async function createOrganizationService(name: string, userId: string) {
   const MAX_ATTEMPTS = 3;
+
+  if (!name) {
+    throw new AppError("Organization name is required", 400);
+  }
+  if (!userId) {
+    throw new AppError("User ID is required", 400);
+  }
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     const slug = generateSlug(name);
@@ -32,14 +40,17 @@ export async function createOrganizationService(name: string, userId: string) {
     }
   }
 
-  throw new Error("Failed to generate a unique organization slug");
+  throw new AppError("Failed to generate a unique organization slug", 400);
 }
 
 export async function getOrganizationsService(userId: string) {
+  if (!userId) {
+    throw new AppError("User ID is required", 400);
+  }
   try {
     const organizations = await getOrganizationsByUserId(userId);
     if (!organizations) {
-      throw new Error("No organizations found for the user");
+      throw new AppError("No organizations found for the user", 404);
     }
     return organizations;
   } catch (error) {
@@ -51,10 +62,16 @@ export async function getOrganizationService(
   userId: string,
   organizationId: string,
 ) {
+  if (!userId) {
+    throw new AppError("User ID is required", 400);
+  }
+  if (!organizationId) {
+    throw new AppError("Organization ID is required", 400);
+  }
   try {
     const organization = await getOrganizationById(userId, organizationId);
     if (!organization) {
-      throw new Error("Organization not found for the user");
+      throw new AppError("Organization not found for the user", 404);
     }
     return organization;
   } catch (error) {
@@ -67,6 +84,15 @@ export async function updateOrganizationService(
   organizationId: string,
   name: string,
 ) {
+  if (!userId) {
+    throw new AppError("User ID is required", 400);
+  }
+  if (!organizationId) {
+    throw new AppError("Organization ID is required", 400);
+  }
+  if (!name) {
+    throw new AppError("Organization name is required", 400);
+  }
   try {
     const organization = await updateOrganizationById(
       userId,
@@ -74,7 +100,7 @@ export async function updateOrganizationService(
       name,
     );
     if (!organization) {
-      throw new Error("Organization not found for the user");
+      throw new AppError("Organization not found for the user", 404);
     }
     return organization;
   } catch (error) {
@@ -86,10 +112,16 @@ export async function deleteOrganizationService(
   userId: string,
   organizationId: string,
 ) {
+  if (!userId) {
+    throw new AppError("User ID is required", 400);
+  }
+  if (!organizationId) {
+    throw new AppError("Organization ID is required", 400);
+  }
   try {
     const organization = await deleteOrganizationById(userId, organizationId);
     if (!organization) {
-      throw new Error("Organization not found for the user");
+      throw new AppError("Organization not found for the user", 404);
     }
     return organization;
   } catch (error) {

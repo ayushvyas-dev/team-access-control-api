@@ -1,4 +1,5 @@
 import prisma from "../../db/prisma.js";
+import { AppError } from "../../utils/appError.js";
 
 export async function createOrganizationWithOwner(data: {
   name: string;
@@ -73,7 +74,7 @@ export async function updateOrganizationById(
   });
 
   if (!organization) {
-    throw new Error("Organization not found or permission denied");
+    throw new AppError("Organization not found or permission denied", 404);
   }
 
   return prisma.organization.update({
@@ -102,7 +103,7 @@ export async function deleteOrganizationById(
   });
 
   if (!organization) {
-    throw new Error("Organization not found or permission denied");
+    throw new AppError("Organization not found or permission denied", 404);
   }
 
   return prisma.organization.delete({

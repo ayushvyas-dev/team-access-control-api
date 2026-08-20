@@ -38,10 +38,6 @@ export async function getMembership(
     const organizationId = req.params.organizationId as string;
     const memberId = req.params.memberId as string;
 
-    if (!organizationId || !memberId) {
-      throw new Error("Organization ID and Member ID are required");
-    }
-
     const membership = await getMembershipService(organizationId, memberId);
 
     return res.status(200).json({
@@ -65,10 +61,6 @@ export async function updateMembership(
     const organizationId = req.params.organizationId as string;
     const memberId = req.params.memberId as string;
     const { role } = req.body;
-
-    if (!organizationId || !memberId) {
-      throw new Error("Organization ID and Member ID are required");
-    }
 
     const membership = await updateMembershipService(
       organizationId,
@@ -97,10 +89,6 @@ export async function deleteMembership(
     const organizationId = req.params.organizationId as string;
     const memberId = req.params.memberId as string;
 
-    if (!organizationId || !memberId) {
-      throw new Error("Organization ID and Member ID are required");
-    }
-
     await deleteMembershipService(organizationId, memberId);
 
     return res.status(200).json({
@@ -118,16 +106,8 @@ export async function deleteCurrentUserMembership(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id as string;
+    const userId = req.user!.id as string;
     const organizationId = req.params.organizationId as string;
-
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-
-    if (!organizationId) {
-      throw new Error("Organization ID is required");
-    }
 
     await deleteCurrentUserMembershipService(userId, organizationId);
 

@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, NextFunction, Response } from "express";
+
 import {
   deleteCurrentUser,
   getCurrentUser,
@@ -7,10 +8,7 @@ import {
 
 export async function getMe(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = req.user!.id;
     const user = await getCurrentUser(userId);
     return res.status(200).json({
       success: true,
@@ -28,10 +26,7 @@ export async function updateMe(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = req.user!.id;
     const { name } = req.body;
     const user = await updateCurrentUser(userId, name);
     return res.status(200).json({
@@ -50,10 +45,7 @@ export async function deleteMe(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = req.user!.id;
     await deleteCurrentUser(userId);
     return res.status(200).json({
       success: true,

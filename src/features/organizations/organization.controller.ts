@@ -14,10 +14,7 @@ export async function createOrganization(
 ) {
   try {
     const { name } = req.body;
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = req.user!.id;
 
     const organization = await createOrganizationService(name, userId);
     return res.status(201).json({
@@ -36,10 +33,8 @@ export async function getOrganizations(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = req.user!.id;
+
     const organizations = await getOrganizationsService(userId);
     return res.status(200).json({
       success: true,
@@ -57,15 +52,8 @@ export async function getOrganization(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id;
+    const userId = req.user!.id;
     const organizationId = req.params.organizationId as string;
-
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-    if (!organizationId) {
-      throw new Error("Organization ID is required");
-    }
 
     const organization = await getOrganizationService(userId, organizationId);
     return res.status(200).json({
@@ -84,16 +72,9 @@ export async function updateOrganization(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id;
+    const userId = req.user!.id;
     const organizationId = req.params.organizationId as string;
     const { name } = req.body;
-
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-    if (!organizationId) {
-      throw new Error("Organization ID is required");
-    }
 
     const organization = await updateOrganizationService(
       userId,
@@ -116,15 +97,9 @@ export async function deleteOrganization(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id;
+    const userId = req.user!.id;
     const organizationId = req.params.organizationId as string;
 
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-    if (!organizationId) {
-      throw new Error("Organization ID is required");
-    }
     await deleteOrganizationService(userId, organizationId);
     return res.status(200).json({
       success: true,

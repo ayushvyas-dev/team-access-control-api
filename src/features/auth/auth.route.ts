@@ -22,12 +22,4 @@ authRouter.post("/login", validate({ body: loginUserSchema }), login);
 
 authRouter.post("/refresh", refresh);
 
-// authRouter.post("/logout", (req, res) => {
-//   res.send("logout endpoint");
-// });
-
-// authRouter.post("/logout-all", (req, res) => {
-//   res.send("logout-all endpoint");
-// });
-
 export default authRouter;

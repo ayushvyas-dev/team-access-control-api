@@ -1,5 +1,6 @@
 import { emailTransporter } from "../config/nodemailer.config.js";
 import { config } from "../config/env.config.js";
+import { AppError } from "./appError.js";
 
 export async function sendVerificationEmail(
   email: string,
@@ -19,9 +20,7 @@ export async function sendVerificationEmail(
     `,
     });
   } catch (error) {
-    throw new Error("Failed to send verification email", {
-      cause: error,
-    });
+    throw new AppError("Failed to send verification email", 500);
   }
 }
 
@@ -42,8 +41,6 @@ export async function sendInvitationEmail(
     `,
     });
   } catch (error) {
-    throw new Error("Failed to send invitation email", {
-      cause: error,
-    });
+    throw new AppError("Failed to send invitation email", 500);
   }
 }

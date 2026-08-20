@@ -11,7 +11,7 @@ export async function getAllSession(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id as string;
+    const userId = req.user!.id as string;
     const sessions = await getAllSessionService(userId);
 
     return res.status(200).json({
@@ -30,7 +30,7 @@ export async function deleteSession(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id as string;
+    const userId = req.user!.id as string;
     const sessionId = req.params.sessionId as string;
 
     await deleteSessionService(userId, sessionId);
@@ -49,7 +49,7 @@ export async function deleteAllSession(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id as string;
+    const userId = req.user!.id as string;
 
     await deleteAllSessionService(userId);
     return res.status(200).json({

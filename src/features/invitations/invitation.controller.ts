@@ -14,10 +14,7 @@ export async function getUserInvitations(
   next: NextFunction,
 ) {
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = req.user!.id;
 
     const invitations = await getUserInvitationsService(userId);
 
@@ -39,14 +36,7 @@ export async function createInvitation(
   try {
     const organizationId = req.params.organizationId as string;
     const { email, role } = req.body;
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-    if (!organizationId) {
-      throw new Error("Organization ID is required");
-    }
-
+    const userId = req.user!.id;
     const invitation = await createInvitationService(
       organizationId,
       userId,
@@ -110,7 +100,7 @@ export async function acceptInvitation(
 ) {
   try {
     const invitationId = req.params.invitationId as string;
-    const userId = req.user?.id as string;
+    const userId = req.user!.id;
 
     await acceptInvitationService(userId, invitationId);
 
@@ -130,7 +120,7 @@ export async function rejectInvitation(
 ) {
   try {
     const invitationId = req.params.invitationId as string;
-    const userId = req.user?.id as string;
+    const userId = req.user!.id;
 
     await rejectInvitationService(userId, invitationId);
 
