@@ -47,15 +47,12 @@ export async function getOrganizationsService(userId: string) {
   if (!userId) {
     throw new AppError("User ID is required", 400);
   }
-  try {
-    const organizations = await getOrganizationsByUserId(userId);
-    if (!organizations) {
-      throw new AppError("No organizations found for the user", 404);
-    }
-    return organizations;
-  } catch (error) {
-    throw error;
+
+  const organizations = await getOrganizationsByUserId(userId);
+  if (!organizations) {
+    throw new AppError("No organizations found for the user", 404);
   }
+  return organizations;
 }
 
 export async function getOrganizationService(
@@ -68,15 +65,12 @@ export async function getOrganizationService(
   if (!organizationId) {
     throw new AppError("Organization ID is required", 400);
   }
-  try {
-    const organization = await getOrganizationById(userId, organizationId);
-    if (!organization) {
-      throw new AppError("Organization not found for the user", 404);
-    }
-    return organization;
-  } catch (error) {
-    throw error;
+
+  const organization = await getOrganizationById(userId, organizationId);
+  if (!organization) {
+    throw new AppError("Organization not found for the user", 404);
   }
+  return organization;
 }
 
 export async function updateOrganizationService(
@@ -93,19 +87,16 @@ export async function updateOrganizationService(
   if (!name) {
     throw new AppError("Organization name is required", 400);
   }
-  try {
-    const organization = await updateOrganizationById(
-      userId,
-      organizationId,
-      name,
-    );
-    if (!organization) {
-      throw new AppError("Organization not found for the user", 404);
-    }
-    return organization;
-  } catch (error) {
-    throw error;
+
+  const organization = await updateOrganizationById(
+    userId,
+    organizationId,
+    name,
+  );
+  if (!organization) {
+    throw new AppError("Organization not found for the user", 404);
   }
+  return organization;
 }
 
 export async function deleteOrganizationService(
@@ -118,13 +109,10 @@ export async function deleteOrganizationService(
   if (!organizationId) {
     throw new AppError("Organization ID is required", 400);
   }
-  try {
-    const organization = await deleteOrganizationById(userId, organizationId);
-    if (!organization) {
-      throw new AppError("Organization not found for the user", 404);
-    }
-    return organization;
-  } catch (error) {
-    throw error;
+
+  const organization = await deleteOrganizationById(userId, organizationId);
+  if (!organization) {
+    throw new AppError("Organization not found for the user", 404);
   }
+  return organization;
 }

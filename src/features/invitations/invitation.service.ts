@@ -26,21 +26,17 @@ export async function getUserInvitationsService(userId: string) {
     throw new AppError("Unauthorized", 401);
   }
 
-  try {
-    const user = await getUserById(userId);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-    const email = user.email;
-
-    const invitations = await getUserInvitations(email);
-    if (!invitations) {
-      throw new AppError("No invitations found for the user", 404);
-    }
-    return invitations;
-  } catch (error) {
-    throw error;
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+  const email = user.email;
+
+  const invitations = await getUserInvitations(email);
+  if (!invitations) {
+    throw new AppError("No invitations found for the user", 404);
+  }
+  return invitations;
 }
 
 export async function createInvitationService(
@@ -59,100 +55,90 @@ export async function createInvitationService(
     throw new AppError("Email and role are required", 400);
   }
 
-  try {
-    const organization = await getOrganizationById(userId, organizationId);
+  const organization = await getOrganizationById(userId, organizationId);
 
-    if (!organization) {
-      throw new AppError("Organization not found", 404);
-    }
-
-    const membership = await getMembershipByOrgAndMemberId(
-      organizationId,
-      userId,
-    );
-
-    if (!membership) {
-      throw new AppError("Membership not found", 404);
-    }
-
-    if (membership.role !== "ADMIN" && membership.role !== "OWNER") {
-      throw new AppError("Only admins and owners can create invitations", 403);
-    }
-
-    const alreadyMember = await getMembershipByOrgAndEmail(
-      organizationId,
-      email,
-    );
-
-    if (alreadyMember) {
-      throw new AppError("User is already a member of the organization", 400);
-    }
-
-    const alreadyInvited = await getInvitationByOrgAndEmail(
-      organizationId,
-      email,
-    );
-    if (alreadyInvited && alreadyInvited.expiresAt < new Date()) {
-      throw new AppError("Invitation expired", 400);
-    }
-    if (alreadyInvited && alreadyInvited.status === "PENDING") {
-      throw new AppError(
-        "User has already been invited to the organization",
-        400,
-      );
-    }
-
-    const rawInvitation = crypto.randomBytes(32).toString("hex");
-    const invitationHash = hashToken(rawInvitation);
-
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-    const invitation = await createInvitationByOrgAndEmail(
-      organizationId,
-      userId,
-      email,
-      role,
-      invitationHash,
-      expiresAt,
-    );
-    if (!invitation) {
-      throw new AppError("Failed to create invitation", 500);
-    }
-
-    const invitationUrl = `http://localhost:5000/api/v1/invitations/${rawInvitation}/accept`;
-
-    if (config.NODE_ENV === "production") {
-      await sendInvitationEmail(email, organization.name, invitationUrl);
-    }
-
-    return {
-      id: invitation.id,
-      email: invitation.email,
-      role: invitation.role,
-      invitationUrl:
-        process.env.NODE_ENV === "development" ? invitationUrl : undefined,
-      status: invitation.status,
-      expiresAt: invitation.expiresAt,
-      createdAt: invitation.createdAt,
-    };
-  } catch (error) {
-    throw error;
+  if (!organization) {
+    throw new AppError("Organization not found", 404);
   }
+
+  const membership = await getMembershipByOrgAndMemberId(
+    organizationId,
+    userId,
+  );
+
+  if (!membership) {
+    throw new AppError("Membership not found", 404);
+  }
+
+  if (membership.role !== "ADMIN" && membership.role !== "OWNER") {
+    throw new AppError("Only admins and owners can create invitations", 403);
+  }
+
+  const alreadyMember = await getMembershipByOrgAndEmail(organizationId, email);
+
+  if (alreadyMember) {
+    throw new AppError("User is already a member of the organization", 400);
+  }
+
+  const alreadyInvited = await getInvitationByOrgAndEmail(
+    organizationId,
+    email,
+  );
+  if (alreadyInvited && alreadyInvited.expiresAt < new Date()) {
+    throw new AppError("Invitation expired", 400);
+  }
+  if (alreadyInvited && alreadyInvited.status === "PENDING") {
+    throw new AppError(
+      "User has already been invited to the organization",
+      400,
+    );
+  }
+
+  const rawInvitation = crypto.randomBytes(32).toString("hex");
+  const invitationHash = hashToken(rawInvitation);
+
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+  const invitation = await createInvitationByOrgAndEmail(
+    organizationId,
+    userId,
+    email,
+    role,
+    invitationHash,
+    expiresAt,
+  );
+  if (!invitation) {
+    throw new AppError("Failed to create invitation", 500);
+  }
+
+  const invitationUrl = `http://localhost:5000/api/v1/invitations/${rawInvitation}/accept`;
+
+  if (config.NODE_ENV === "production") {
+    await sendInvitationEmail(email, organization.name, invitationUrl);
+  }
+
+  return {
+    id: invitation.id,
+    email: invitation.email,
+    role: invitation.role,
+    invitationUrl:
+      process.env.NODE_ENV === "development" ? invitationUrl : undefined,
+    status: invitation.status,
+    expiresAt: invitation.expiresAt,
+    createdAt: invitation.createdAt,
+  };
 }
 
 export async function getInvitationsService(organizationId: string) {
   if (!organizationId) {
     throw new AppError("Organization ID is required", 400);
   }
-  try {
-    const invitations = await getAllOrgInvitations(organizationId);
-    if (!invitations) {
-      throw new AppError("No invitations found for the organization", 404);
-    }
-    return invitations;
-  } catch (error) {
-    throw error;
+
+  const invitations = await getAllOrgInvitations(organizationId);
+  if (!invitations) {
+    throw new AppError("No invitations found for the organization", 404);
   }
+  return invitations;
 }
 
 export async function deleteInvitationService(
@@ -166,28 +152,24 @@ export async function deleteInvitationService(
     throw new AppError("Invitation ID is required", 400);
   }
 
-  try {
-    const invitation = await getInvitationByOrgAndInvitationId(
-      organizationId,
-      invitationId,
-    );
+  const invitation = await getInvitationByOrgAndInvitationId(
+    organizationId,
+    invitationId,
+  );
 
-    if (!invitation) {
-      throw new AppError("Invitation not found", 404);
-    }
-
-    const deletedInvitation = await deleteInvitationByOrgAndInvitationId(
-      organizationId,
-      invitationId,
-    );
-    if (!deletedInvitation) {
-      throw new AppError("Failed to delete invitation", 500);
-    }
-
-    return invitation;
-  } catch (error) {
-    throw error;
+  if (!invitation) {
+    throw new AppError("Invitation not found", 404);
   }
+
+  const deletedInvitation = await deleteInvitationByOrgAndInvitationId(
+    organizationId,
+    invitationId,
+  );
+  if (!deletedInvitation) {
+    throw new AppError("Failed to delete invitation", 500);
+  }
+
+  return invitation;
 }
 
 export async function acceptInvitationService(
@@ -201,51 +183,47 @@ export async function acceptInvitationService(
     throw new AppError("Invitation ID is required", 400);
   }
 
-  try {
-    const user = await getUserById(userId);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-
-    const invitation = await findInvitationById(invitationId);
-
-    if (!invitation) {
-      throw new AppError("Invitation not found", 404);
-    }
-
-    if (invitation.email !== user.email) {
-      throw new AppError(
-        "This invitation was sent to a different email address",
-        400,
-      );
-    }
-
-    if (invitation.expiresAt < new Date()) {
-      throw new AppError("Invitation expired", 400);
-    }
-
-    if (invitation.status !== "PENDING") {
-      throw new AppError("Invitation already accepted or rejected", 400);
-    }
-
-    const createMembershipResult = await createMembershipFromInvitation(
-      invitation.organizationId,
-      userId,
-      invitation.role,
-    );
-    if (!createMembershipResult) {
-      throw new AppError("Failed to create membership from invitation", 500);
-    }
-
-    const inviteResult = await acceptInvitationById(invitation.id);
-    if (!inviteResult) {
-      throw new AppError("Failed to accept invitation", 500);
-    }
-
-    return inviteResult;
-  } catch (error) {
-    throw error;
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+
+  const invitation = await findInvitationById(invitationId);
+
+  if (!invitation) {
+    throw new AppError("Invitation not found", 404);
+  }
+
+  if (invitation.email !== user.email) {
+    throw new AppError(
+      "This invitation was sent to a different email address",
+      400,
+    );
+  }
+
+  if (invitation.expiresAt < new Date()) {
+    throw new AppError("Invitation expired", 400);
+  }
+
+  if (invitation.status !== "PENDING") {
+    throw new AppError("Invitation already accepted or rejected", 400);
+  }
+
+  const createMembershipResult = await createMembershipFromInvitation(
+    invitation.organizationId,
+    userId,
+    invitation.role,
+  );
+  if (!createMembershipResult) {
+    throw new AppError("Failed to create membership from invitation", 500);
+  }
+
+  const inviteResult = await acceptInvitationById(invitation.id);
+  if (!inviteResult) {
+    throw new AppError("Failed to accept invitation", 500);
+  }
+
+  return inviteResult;
 }
 
 export async function rejectInvitationService(
@@ -259,40 +237,36 @@ export async function rejectInvitationService(
     throw new AppError("Invitation ID is required", 400);
   }
 
-  try {
-    const user = await getUserById(userId);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-
-    const invitation = await findInvitationById(invitationId);
-
-    if (!invitation) {
-      throw new AppError("Invitation not found", 404);
-    }
-
-    if (invitation.email !== user.email) {
-      throw new AppError(
-        "This invitation was sent to a different email address",
-        400,
-      );
-    }
-
-    if (invitation.expiresAt < new Date()) {
-      throw new AppError("Invitation expired", 400);
-    }
-
-    if (invitation.status !== "PENDING") {
-      throw new AppError("Invitation already accepted or rejected", 400);
-    }
-
-    const inviteResult = await rejectInvitationById(invitation.id);
-    if (!inviteResult) {
-      throw new AppError("Failed to reject invitation", 500);
-    }
-
-    return inviteResult;
-  } catch (error) {
-    throw error;
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+
+  const invitation = await findInvitationById(invitationId);
+
+  if (!invitation) {
+    throw new AppError("Invitation not found", 404);
+  }
+
+  if (invitation.email !== user.email) {
+    throw new AppError(
+      "This invitation was sent to a different email address",
+      400,
+    );
+  }
+
+  if (invitation.expiresAt < new Date()) {
+    throw new AppError("Invitation expired", 400);
+  }
+
+  if (invitation.status !== "PENDING") {
+    throw new AppError("Invitation already accepted or rejected", 400);
+  }
+
+  const inviteResult = await rejectInvitationById(invitation.id);
+  if (!inviteResult) {
+    throw new AppError("Failed to reject invitation", 500);
+  }
+
+  return inviteResult;
 }

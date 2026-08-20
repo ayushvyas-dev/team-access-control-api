@@ -9,15 +9,12 @@ export async function getCurrentUser(userId: string) {
   if (!userId) {
     throw new AppError("User ID is required", 400);
   }
-  try {
-    const user = await getUserById(userId);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-    return user;
-  } catch (error) {
-    throw error;
+
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+  return user;
 }
 
 export async function updateCurrentUser(userId: string, name: string) {
@@ -27,28 +24,22 @@ export async function updateCurrentUser(userId: string, name: string) {
   if (!name) {
     throw new AppError("User name is required", 400);
   }
-  try {
-    const user = await updateUserById(userId, name);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-    return user;
-  } catch (error) {
-    throw error;
+
+  const user = await updateUserById(userId, name);
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+  return user;
 }
 
 export async function deleteCurrentUser(userId: string) {
   if (!userId) {
     throw new AppError("User ID is required", 400);
   }
-  try {
-    const user = await softDeleteUserById(userId);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-    return user;
-  } catch (error) {
-    throw error;
+
+  const user = await softDeleteUserById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+  return user;
 }

@@ -12,18 +12,15 @@ export async function getMembershipsService(organizationId: string) {
   if (!organizationId) {
     throw new AppError("Organization ID is required", 400);
   }
-  try {
-    const memberships = await getMembershipsByOrgId(organizationId);
-    if (!memberships) {
-      throw new AppError(
-        "Memberships not found for the given organization and member",
-        404,
-      );
-    }
-    return memberships;
-  } catch (error) {
-    throw error;
+
+  const memberships = await getMembershipsByOrgId(organizationId);
+  if (!memberships) {
+    throw new AppError(
+      "Memberships not found for the given organization and member",
+      404,
+    );
   }
+  return memberships;
 }
 
 export async function getMembershipService(
@@ -36,21 +33,18 @@ export async function getMembershipService(
   if (!memberId) {
     throw new AppError("Member ID is required", 400);
   }
-  try {
-    const membership = await getMembershipByOrgAndMemberId(
-      organizationId,
-      memberId,
+
+  const membership = await getMembershipByOrgAndMemberId(
+    organizationId,
+    memberId,
+  );
+  if (!membership) {
+    throw new AppError(
+      "Membership not found for the given organization and member",
+      404,
     );
-    if (!membership) {
-      throw new AppError(
-        "Membership not found for the given organization and member",
-        404,
-      );
-    }
-    return membership;
-  } catch (error) {
-    throw error;
   }
+  return membership;
 }
 
 export async function updateMembershipService(
@@ -67,22 +61,19 @@ export async function updateMembershipService(
   if (!role) {
     throw new AppError("Role is required", 400);
   }
-  try {
-    const membership = await updateMembershipByOrgAndMemberId(
-      organizationId,
-      memberId,
-      role,
+
+  const membership = await updateMembershipByOrgAndMemberId(
+    organizationId,
+    memberId,
+    role,
+  );
+  if (!membership) {
+    throw new AppError(
+      "Membership not found for the given organization and member",
+      404,
     );
-    if (!membership) {
-      throw new AppError(
-        "Membership not found for the given organization and member",
-        404,
-      );
-    }
-    return membership;
-  } catch (error) {
-    throw error;
   }
+  return membership;
 }
 
 export async function deleteMembershipService(
@@ -95,21 +86,18 @@ export async function deleteMembershipService(
   if (!memberId) {
     throw new AppError("Member ID is required", 400);
   }
-  try {
-    const membership = await deleteMembershipByOrgAndMemberId(
-      organizationId,
-      memberId,
+
+  const membership = await deleteMembershipByOrgAndMemberId(
+    organizationId,
+    memberId,
+  );
+  if (!membership) {
+    throw new AppError(
+      "Membership not found for the given organization and member",
+      404,
     );
-    if (!membership) {
-      throw new AppError(
-        "Membership not found for the given organization and member",
-        404,
-      );
-    }
-    return membership;
-  } catch (error) {
-    throw error;
   }
+  return membership;
 }
 
 export async function deleteCurrentUserMembershipService(
@@ -122,19 +110,16 @@ export async function deleteCurrentUserMembershipService(
   if (!organizationId) {
     throw new AppError("Organization ID is required", 400);
   }
-  try {
-    const membership = await deleteCurrentUserMembershipById(
-      userId,
-      organizationId,
+
+  const membership = await deleteCurrentUserMembershipById(
+    userId,
+    organizationId,
+  );
+  if (!membership) {
+    throw new AppError(
+      "Membership not found for the given user and organization",
+      404,
     );
-    if (!membership) {
-      throw new AppError(
-        "Membership not found for the given user and organization",
-        404,
-      );
-    }
-    return membership;
-  } catch (error) {
-    throw error;
   }
+  return membership;
 }
