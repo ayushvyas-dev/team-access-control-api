@@ -98,3 +98,20 @@ paths:
   /api/v1/invitations/{invitationId}/reject:
     post:
       $ref: "./paths/invitations.yaml#/rejectInvitation/post"
+  /api/v1/organizations/{organizationId}/memberships:
+    get:
+      $ref: "./paths/memberships.yaml#/getMemberships/get"
+
+  /api/v1/organizations/{organizationId}/memberships/{memberId}:
+    get:
+      $ref: "./paths/memberships.yaml#/getMembership/get"
+
+    patch:
+      $ref: "./paths/memberships.yaml#/updateMembership/patch"
+
+    delete:
+      $ref: "./paths/memberships.yaml#/deleteMembership/delete"
+
+  /api/v1/organizations/{organizationId}/memberships/me:
+    delete:
+      $ref: "./paths/memberships.yaml#/deleteCurrentUserMembership/delete"

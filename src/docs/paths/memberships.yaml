@@ -1,0 +1,326 @@
+getMemberships:
+  get:
+    summary: Get organization memberships
+    description: Returns all memberships belonging to an organization.
+    tags:
+      - Memberships
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: organizationId
+        required: true
+        description: The ID of the organization.
+        schema:
+          type: string
+        example: clx789org123
+
+    responses:
+      "200":
+        description: Memberships retrieved successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Memberships retrieved successfully
+                data:
+                  type: object
+                  properties:
+                    memberships:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: clx123membership456
+                          organizationId:
+                            type: string
+                            example: clx789org123
+                          userId:
+                            type: string
+                            example: clx456user789
+                          role:
+                            type: string
+                            example: MEMBER
+                          createdAt:
+                            type: string
+                            format: date-time
+                            example: "2026-08-20T10:30:00.000Z"
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            example: "2026-08-20T10:30:00.000Z"
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "403":
+        description: User does not have access to this organization.
+
+      "404":
+        description: Organization not found.
+
+getMembership:
+  get:
+    summary: Get organization membership
+    description: Returns a specific membership in an organization.
+    tags:
+      - Memberships
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: organizationId
+        required: true
+        description: The ID of the organization.
+        schema:
+          type: string
+        example: clx789org123
+
+      - in: path
+        name: memberId
+        required: true
+        description: The ID of the member.
+        schema:
+          type: string
+        example: clx456user789
+
+    responses:
+      "200":
+        description: Membership retrieved successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Membership retrieved successfully
+                data:
+                  type: object
+                  properties:
+                    membership:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: clx123membership456
+                        organizationId:
+                          type: string
+                          example: clx789org123
+                        userId:
+                          type: string
+                          example: clx456user789
+                        role:
+                          type: string
+                          example: MEMBER
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-08-20T10:30:00.000Z"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-08-20T10:30:00.000Z"
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "403":
+        description: User does not have access to this organization.
+
+      "404":
+        description: Membership not found.
+
+updateMembership:
+  patch:
+    summary: Update membership role
+    description: Updates the role of a member in an organization.
+    tags:
+      - Memberships
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: organizationId
+        required: true
+        description: The ID of the organization.
+        schema:
+          type: string
+        example: clx789org123
+
+      - in: path
+        name: memberId
+        required: true
+        description: The ID of the member whose role will be updated.
+        schema:
+          type: string
+        example: clx456user789
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - role
+            properties:
+              role:
+                type: string
+                example: MEMBER
+
+    responses:
+      "200":
+        description: Membership updated successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Membership updated successfully
+                data:
+                  type: object
+                  properties:
+                    membership:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: clx123membership456
+                        organizationId:
+                          type: string
+                          example: clx789org123
+                        userId:
+                          type: string
+                          example: clx456user789
+                        role:
+                          type: string
+                          example: ADMIN
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-08-20T10:30:00.000Z"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-08-21T10:30:00.000Z"
+
+      "400":
+        description: Invalid request body.
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "403":
+        description: User is not authorized to update this membership.
+
+      "404":
+        description: Membership not found.
+
+deleteMembership:
+  delete:
+    summary: Delete a membership
+    description: Removes a member from an organization.
+    tags:
+      - Memberships
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: organizationId
+        required: true
+        description: The ID of the organization.
+        schema:
+          type: string
+        example: clx789org123
+
+      - in: path
+        name: memberId
+        required: true
+        description: The ID of the member to remove.
+        schema:
+          type: string
+        example: clx456user789
+
+    responses:
+      "200":
+        description: Membership deleted successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Membership deleted successfully
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "403":
+        description: User is not authorized to delete this membership.
+
+      "404":
+        description: Membership not found.
+
+deleteCurrentUserMembership:
+  delete:
+    summary: Leave organization
+    description: Removes the currently authenticated user from an organization.
+    tags:
+      - Memberships
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: organizationId
+        required: true
+        description: The ID of the organization to leave.
+        schema:
+          type: string
+        example: clx789org123
+
+    responses:
+      "200":
+        description: Current user's membership deleted successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Current user's membership deleted successfully
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "404":
+        description: Membership not found.
