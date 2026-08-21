@@ -76,3 +76,25 @@ paths:
   /api/v1/sessions/{sessionId}:
     delete:
       $ref: "./paths/sessions.yaml#/deleteSession/delete"
+  /api/v1/invitations:
+    get:
+      $ref: "./paths/invitations.yaml#/getUserInvitations/get"
+
+  /api/v1/organizations/{organizationId}/invitations:
+    post:
+      $ref: "./paths/invitations.yaml#/createInvitation/post"
+
+    get:
+      $ref: "./paths/invitations.yaml#/getInvitations/get"
+
+  /api/v1/organizations/{organizationId}/invitations/{invitationId}:
+    delete:
+      $ref: "./paths/invitations.yaml#/deleteInvitation/delete"
+
+  /api/v1/invitations/{invitationId}/accept:
+    post:
+      $ref: "./paths/invitations.yaml#/acceptInvitation/post"
+
+  /api/v1/invitations/{invitationId}/reject:
+    post:
+      $ref: "./paths/invitations.yaml#/rejectInvitation/post"
