@@ -66,3 +66,13 @@ paths:
 
     delete:
       $ref: "./paths/user.yaml#/deleteMe/delete"
+  /api/v1/sessions:
+    get:
+      $ref: "./paths/sessions.yaml#/getAllSession/get"
+
+    delete:
+      $ref: "./paths/sessions.yaml#/deleteAllSession/delete"
+
+  /api/v1/sessions/{sessionId}:
+    delete:
+      $ref: "./paths/sessions.yaml#/deleteSession/delete"

@@ -1,0 +1,111 @@
+getAllSession:
+  get:
+    summary: Get all sessions
+    description: Returns all active sessions belonging to the currently authenticated user.
+    tags:
+      - Sessions
+    security:
+      - cookieAuth: []
+
+    responses:
+      "200":
+        description: Sessions retrieved successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Sessions retrieved successfully
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: clx123abc456
+                      userId:
+                        type: string
+                        example: clx789user123
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2026-08-20T10:30:00.000Z"
+                      expiresAt:
+                        type: string
+                        format: date-time
+                        example: "2026-09-20T10:30:00.000Z"
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+deleteSession:
+  delete:
+    summary: Delete a session
+    description: Deletes a specific session belonging to the currently authenticated user.
+    tags:
+      - Sessions
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: sessionId
+        required: true
+        description: The ID of the session to delete.
+        schema:
+          type: string
+        example: clx123abc456
+
+    responses:
+      "200":
+        description: Session deleted successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Session deleted successfully
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "404":
+        description: Session not found.
+
+deleteAllSession:
+  delete:
+    summary: Delete all sessions
+    description: Deletes all sessions belonging to the currently authenticated user.
+    tags:
+      - Sessions
+    security:
+      - cookieAuth: []
+
+    responses:
+      "200":
+        description: All sessions deleted successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: All session deleted successfully
+
+      "401":
+        description: Unauthorized. Authentication is required.
