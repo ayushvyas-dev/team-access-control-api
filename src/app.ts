@@ -26,6 +26,7 @@ import {
   organizationLimiter,
   rateLimit,
 } from "./middlewares/rate-limit/index.js";
+import auditLogRouter from "./features/audit-logs/audit-log.route.js";
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1", membershipRouter);
 app.use("/api/v1", invitationRouter);
 app.use("/api/v1/sessions", sessionRouter);
+app.use("/api/v1", auditLogRouter);
 
 // securing /api-docs with basic auth
 app.use(
