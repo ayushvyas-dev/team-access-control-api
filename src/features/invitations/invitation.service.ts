@@ -97,7 +97,7 @@ export async function createInvitationService(
     throw new AppError("Failed to create invitation", 500);
   }
 
-  const invitationUrl = `http://localhost:5000/api/v1/invitations/${rawInvitation}/accept`;
+  const invitationUrl = `${config.FRONTEND_URL}/invitations/${rawInvitation}/accept`;
 
   if (config.NODE_ENV === "production") {
     await sendInvitationEmail(email, organization.name, invitationUrl);
