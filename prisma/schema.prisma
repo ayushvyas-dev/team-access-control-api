@@ -20,6 +20,7 @@ model User {
   otps        Otp[]
   memberships Membership[]
   invitations Invitation[]
+  auditLogs   AuditLog[]   @relation("AuditActor")
 
   @@index([deletedAt])
   @@map("users")
@@ -93,6 +94,7 @@ model Organization {
 
   memberships Membership[]
   invitations Invitation[]
+  auditLogs   AuditLog[]
 
   @@map("organizations")
 }
@@ -152,4 +154,51 @@ enum InvitationStatus {
   ACCEPTED
   REJECTED
   EXPIRED
+}
+
+model AuditLog {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @map("organization_id") @db.Uuid
+  actorId        String @map("actor_id") @db.Uuid
+
+  action       AuditAction
+  resourceType AuditResourceType @map("resource_type")
+  resourceId   String?           @map("resource_id") @db.Uuid
+
+  metadata Json?
+
+  ip        String? @db.VarChar(45)
+  userAgent String? @map("user_agent") @db.VarChar(512)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  actor User @relation("AuditActor", fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([actorId, createdAt])
+  @@index([resourceType, resourceId])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+enum AuditAction {
+  MEMBER_INVITED
+  MEMBER_JOINED
+  MEMBER_UPDATED
+  MEMBER_REMOVED
+  ROLE_CHANGED
+
+  INVITATION_ACCEPTED
+  INVITATION_REJECTED
+  INVITATION_REVOKED
+
+  ORGANIZATION_UPDATED
+}
+
+enum AuditResourceType {
+  ORGANIZATION
+  MEMBERSHIP
+  INVITATION
 }
