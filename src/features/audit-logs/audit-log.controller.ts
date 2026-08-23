@@ -12,8 +12,8 @@ export async function getAuditLogs(
 ) {
   try {
     const organizationId = req.params.organizationId as string;
-    const { page, limit, action, actorId, resourceType } =
-      req.query as unknown as GetAuditLogsQuery;
+    const { page, limit, action, actorId, resourceType } = req.validated
+      ?.query as unknown as GetAuditLogsQuery;
 
     const result = await getAuditLogsService(organizationId, {
       page,

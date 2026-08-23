@@ -1,15 +1,9 @@
 import { AppError } from "../../utils/appError.js";
 import {
-  createAuditLog,
   getAuditLogById,
   getAuditLogs,
-  CreateAuditLogData,
   GetAuditLogsOptions,
 } from "./audit-log.repository.js";
-
-export async function createAuditLogService(data: CreateAuditLogData) {
-  return createAuditLog(data);
-}
 
 export async function getAuditLogsService(
   organizationId: string,

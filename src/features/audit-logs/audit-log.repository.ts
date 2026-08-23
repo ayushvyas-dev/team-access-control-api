@@ -1,16 +1,16 @@
 import prisma from "../../db/prisma.js";
 import { AuditAction, AuditResourceType, Prisma } from "@prisma/client";
 
-export interface CreateAuditLogData {
-  organizationId: string;
-  actorId: string;
-  action: AuditAction;
-  resourceType: AuditResourceType;
-  resourceId?: string;
-  metadata?: Prisma.InputJsonValue;
-  ip?: string;
-  userAgent?: string;
-}
+// export interface CreateAuditLogData {
+//   organizationId: string;
+//   actorId: string;
+//   action: AuditAction;
+//   resourceType: AuditResourceType;
+//   resourceId?: string;
+//   metadata?: Prisma.InputJsonValue;
+//   ip?: string;
+//   userAgent?: string;
+// }
 
 export interface GetAuditLogsOptions {
   page: number;
@@ -20,20 +20,20 @@ export interface GetAuditLogsOptions {
   resourceType?: AuditResourceType;
 }
 
-export async function createAuditLog(data: CreateAuditLogData) {
-  return prisma.auditLog.create({
-    data: {
-      organizationId: data.organizationId,
-      actorId: data.actorId,
-      action: data.action,
-      resourceType: data.resourceType,
-      resourceId: data.resourceId,
-      metadata: data.metadata,
-      ip: data.ip,
-      userAgent: data.userAgent,
-    },
-  });
-}
+// export async function createAuditLog(data: CreateAuditLogData) {
+//   return prisma.auditLog.create({
+//     data: {
+//       organizationId: data.organizationId,
+//       actorId: data.actorId,
+//       action: data.action,
+//       resourceType: data.resourceType,
+//       resourceId: data.resourceId,
+//       metadata: data.metadata,
+//       ip: data.ip,
+//       userAgent: data.userAgent,
+//     },
+//   });
+// }
 
 export async function getAuditLogs(
   organizationId: string,

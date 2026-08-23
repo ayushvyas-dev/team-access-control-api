@@ -1,5 +1,15 @@
 import prisma from "../../db/prisma.js";
 import { Role } from "@prisma/client";
+import { AuditAction, AuditResourceType, Prisma } from "@prisma/client";
+
+export interface CreateAuditLogData {
+  organizationId: string;
+  actorId: string;
+  action: AuditAction;
+  resourceType: AuditResourceType;
+  resourceId?: string;
+  metadata?: Prisma.InputJsonValue;
+}
 
 export async function getUserInvitations(userEmail: string) {
   return prisma.invitation.findMany({
@@ -51,6 +61,62 @@ export async function getInvitationByOrgAndInvitationId(
       organizationId,
       id: invitationId,
     },
+  });
+}
+
+// export async function createInvitationByOrgAndEmail(
+//   organizationId: string,
+//   invitedById: string,
+//   email: string,
+//   role: Role,
+//   invitationHash: string,
+//   expiresAt: Date,
+// ) {
+//   return prisma.invitation.create({
+//     data: {
+//       organizationId,
+//       invitedById,
+//       email,
+//       role,
+//       tokenHash: invitationHash,
+//       expiresAt,
+//     },
+//   });
+// }
+
+export async function createInvitationWithAuditLog(
+  organizationId: string,
+  invitedById: string,
+  email: string,
+  role: Role,
+  invitationHash: string,
+  expiresAt: Date,
+  auditLog: CreateAuditLogData,
+) {
+  return prisma.$transaction(async (tx) => {
+    const invitation = await tx.invitation.create({
+      data: {
+        organizationId,
+        invitedById,
+        email,
+        role,
+        tokenHash: invitationHash,
+        expiresAt,
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        organizationId: auditLog.organizationId,
+        actorId: auditLog.actorId,
+        action: auditLog.action,
+        resourceType: auditLog.resourceType,
+        resourceId: invitation.id,
+        metadata: auditLog.metadata,
+      },
+    });
+
+    return invitation;
   });
 }
 

@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { hashToken } from "../../utils/token.js";
 import {
   acceptInvitationById,
-  createInvitationByOrgAndEmail,
+  createInvitationWithAuditLog,
   deleteInvitationByOrgAndInvitationId,
   getAllOrgInvitations,
   getInvitationByOrgAndEmail,
@@ -20,6 +20,7 @@ import { sendInvitationEmail } from "../../utils/email.js";
 import { config } from "../../config/env.config.js";
 import { getUserById } from "../auth/auth.repository.js";
 import { AppError } from "../../utils/appError.js";
+import { AuditAction, AuditResourceType } from "@prisma/client";
 
 export async function getUserInvitationsService(userId: string) {
   const user = await getUserById(userId);
@@ -85,13 +86,23 @@ export async function createInvitationService(
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-  const invitation = await createInvitationByOrgAndEmail(
+  const invitation = await createInvitationWithAuditLog(
     organizationId,
     userId,
     email,
     role,
     invitationHash,
     expiresAt,
+    {
+      organizationId: organizationId,
+      actorId: userId,
+      action: AuditAction.MEMBER_INVITED,
+      resourceType: AuditResourceType.INVITATION,
+      metadata: {
+        email,
+        role,
+      },
+    },
   );
   if (!invitation) {
     throw new AppError("Failed to create invitation", 500);

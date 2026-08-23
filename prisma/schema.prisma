@@ -167,9 +167,6 @@ model AuditLog {
 
   metadata Json?
 
-  ip        String? @db.VarChar(45)
-  userAgent String? @map("user_agent") @db.VarChar(512)
-
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -186,11 +183,10 @@ model AuditLog {
 enum AuditAction {
   MEMBER_INVITED
   MEMBER_JOINED
-  MEMBER_UPDATED
   MEMBER_REMOVED
+  MEMBER_LEFT
   ROLE_CHANGED
 
-  INVITATION_ACCEPTED
   INVITATION_REJECTED
   INVITATION_REVOKED
 

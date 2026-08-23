@@ -9,6 +9,7 @@ type ValidationSchema = {
 
 export function validate(schema: ValidationSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
+    req.validated = {};
     const sources: (keyof ValidationSchema)[] = ["body", "params", "query"];
 
     for (const source of sources) {
@@ -26,7 +27,7 @@ export function validate(schema: ValidationSchema) {
         });
       }
 
-      req[source] = result.data as any;
+      req.validated[source] = result.data as any;
     }
 
     return next();
