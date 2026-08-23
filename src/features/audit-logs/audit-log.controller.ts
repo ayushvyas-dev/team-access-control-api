@@ -1,4 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import {
+  getAuditLogService,
+  getAuditLogsService,
+} from "./audit-log.service.js";
+import { GetAuditLogsQuery } from "./audit-log.validation.js";
 
 export async function getAuditLogs(
   req: Request,
@@ -7,10 +12,10 @@ export async function getAuditLogs(
 ) {
   try {
     const organizationId = req.params.organizationId as string;
-    const { page, limit, action, actorId, resourceType } = req.query;
+    const { page, limit, action, actorId, resourceType } =
+      req.query as unknown as GetAuditLogsQuery;
 
-    const result = await getAuditLogsService({
-      organizationId,
+    const result = await getAuditLogsService(organizationId, {
       page,
       limit,
       action,

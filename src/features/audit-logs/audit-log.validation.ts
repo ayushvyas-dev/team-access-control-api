@@ -12,3 +12,9 @@ export const getAuditLogsQuerySchema = z.object({
 
   resourceType: z.nativeEnum(AuditResourceType).optional(),
 });
+export type GetAuditLogsQuery = z.infer<typeof getAuditLogsQuerySchema>;
+
+export const getAuditLogParamSchema = z.object({
+  auditLogId: z.string().uuid(),
+  organizationId: z.string().uuid(),
+});

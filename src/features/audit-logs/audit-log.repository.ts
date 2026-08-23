@@ -1,7 +1,7 @@
 import prisma from "../../db/prisma.js";
 import { AuditAction, AuditResourceType, Prisma } from "@prisma/client";
 
-interface CreateAuditLogData {
+export interface CreateAuditLogData {
   organizationId: string;
   actorId: string;
   action: AuditAction;
@@ -12,7 +12,7 @@ interface CreateAuditLogData {
   userAgent?: string;
 }
 
-interface GetAuditLogsOptions {
+export interface GetAuditLogsOptions {
   page: number;
   limit: number;
   action?: AuditAction;
