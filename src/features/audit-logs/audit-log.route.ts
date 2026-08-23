@@ -7,9 +7,12 @@ auditLogRouter.get("/organizations/:organizationId/audit-logs", (req, res) => {
   res.send("Retrieve audit logs");
 });
 
-auditLogRouter.post("/organizations/:organizationId/audit-logs", (req, res) => {
-  // Logic to create a new audit log entry
-  res.send("Create a new audit log entry");
-});
+auditLogRouter.get(
+  "/organizations/:organizationId/audit-logs/:auditLogId",
+  (req, res) => {
+    // Logic to retrieve a specific audit log entry
+    res.send("Retrieve a specific audit log entry");
+  },
+);
 
 export default auditLogRouter;
