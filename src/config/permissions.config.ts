@@ -10,4 +10,6 @@ export const permissions = {
   INVITATION_READ: "invitation:read",
   INVITATION_CREATE: "invitation:create",
   INVITATION_DELETE: "invitation:delete",
+
+  AUDIT_LOG_READ: "audit-log:read",
 } as const;

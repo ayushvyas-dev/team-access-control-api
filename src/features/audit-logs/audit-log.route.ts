@@ -5,25 +5,30 @@ import {
   getAuditLogParamSchema,
 } from "./audit-log.validation.js";
 import { organizationIdSchema } from "../organizations/organization.validation.js";
+import { getAuditLog, getAuditLogs } from "./audit-log.controller.js";
+import { authenticate } from "../../middlewares/authentication.middleware.js";
+import { requireOrgMembership } from "../../middlewares/organization.middleware.js";
+import { requirePermission } from "../../middlewares/authorization.middleware.js";
+import { permissions } from "../../config/permissions.config.js";
 
 const auditLogRouter = Router();
 
 auditLogRouter.get(
   "/organizations/:organizationId/audit-logs",
+  authenticate,
+  requireOrgMembership,
+  requirePermission(permissions.AUDIT_LOG_READ),
   validate({ params: organizationIdSchema, query: getAuditLogsQuerySchema }),
-  (req, res) => {
-    // Logic to retrieve audit logs
-    res.send("Retrieve audit logs");
-  },
+  getAuditLogs,
 );
 
 auditLogRouter.get(
   "/organizations/:organizationId/audit-logs/:auditLogId",
+  authenticate,
+  requireOrgMembership,
+  requirePermission(permissions.AUDIT_LOG_READ),
   validate({ params: getAuditLogParamSchema }),
-  (req, res) => {
-    // Logic to retrieve a specific audit log entry
-    res.send("Retrieve a specific audit log entry");
-  },
+  getAuditLog,
 );
 
 export default auditLogRouter;

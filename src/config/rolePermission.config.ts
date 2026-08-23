@@ -14,6 +14,8 @@ export const rolePermissions: Record<Role, string[]> = {
     permissions.INVITATION_READ,
     permissions.INVITATION_CREATE,
     permissions.INVITATION_DELETE,
+
+    permissions.AUDIT_LOG_READ,
   ],
 
   ADMIN: [
@@ -26,6 +28,8 @@ export const rolePermissions: Record<Role, string[]> = {
     permissions.INVITATION_READ,
     permissions.INVITATION_CREATE,
     permissions.INVITATION_DELETE,
+
+    permissions.AUDIT_LOG_READ,
   ],
 
   MEMBER: [permissions.ORGANIZATION_READ, permissions.MEMBER_READ],
