@@ -18,7 +18,6 @@ import swaggerSpec from "./config/swagger.config.js";
 import loggerMiddleware from "./middlewares/logger.middleware.js";
 import cors from "cors";
 import { config } from "./config/env.config.js";
-import basicAuth from "express-basic-auth";
 
 import {
   genericLimiter,
@@ -54,16 +53,6 @@ app.use("/api/v1", invitationRouter);
 app.use("/api/v1/sessions", sessionRouter);
 app.use("/api/v1", auditLogRouter);
 
-// securing /api-docs with basic auth
-app.use(
-  "/api/v1/api-docs",
-  basicAuth({
-    users: {
-      [config.API_DOCS_USERNAME]: config.API_DOCS_PASSWORD,
-    },
-    challenge: true,
-  }),
-);
 app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Global error handler — must have 4 parameters to be recognised by Express
