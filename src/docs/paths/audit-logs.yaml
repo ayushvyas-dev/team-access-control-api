@@ -1,0 +1,298 @@
+getAuditLogs:
+  get:
+    summary: Get organization audit logs
+    description: Returns paginated audit logs for an organization with optional filters for action, actor, and resource type.
+    tags:
+      - Audit Logs
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: organizationId
+        required: true
+        description: The ID of the organization.
+        schema:
+          type: string
+        example: clx789org123
+
+      - in: query
+        name: page
+        required: false
+        description: The page number.
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        example: 1
+
+      - in: query
+        name: limit
+        required: false
+        description: The number of audit logs per page. Maximum is 100.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        example: 10
+
+      - in: query
+        name: action
+        required: false
+        description: Filter audit logs by action.
+        schema:
+          type: string
+          enum:
+            - MEMBER_INVITED
+            - MEMBER_JOINED
+            - MEMBER_REMOVED
+            - MEMBER_LEFT
+            - ROLE_CHANGED
+            - INVITATION_REJECTED
+            - INVITATION_REVOKED
+            - ORGANIZATION_UPDATED
+        example: ROLE_CHANGED
+
+      - in: query
+        name: actorId
+        required: false
+        description: Filter audit logs by the user who performed the action.
+        schema:
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440001
+
+      - in: query
+        name: resourceType
+        required: false
+        description: Filter audit logs by resource type.
+        schema:
+          type: string
+          enum:
+            - ORGANIZATION
+            - MEMBERSHIP
+            - INVITATION
+        example: MEMBERSHIP
+
+    responses:
+      "200":
+        description: Audit logs retrieved successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Audit logs retrieved successfully
+                data:
+                  type: object
+                  properties:
+                    logs:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: clx123audit456
+                          organizationId:
+                            type: string
+                            example: clx789org123
+                          actorId:
+                            type: string
+                            nullable: true
+                            example: clx456user789
+                          action:
+                            type: string
+                            enum:
+                              - MEMBER_INVITED
+                              - MEMBER_JOINED
+                              - MEMBER_REMOVED
+                              - MEMBER_LEFT
+                              - ROLE_CHANGED
+                              - INVITATION_REJECTED
+                              - INVITATION_REVOKED
+                              - ORGANIZATION_UPDATED
+                            example: ROLE_CHANGED
+                          resourceType:
+                            type: string
+                            enum:
+                              - ORGANIZATION
+                              - MEMBERSHIP
+                              - INVITATION
+                            example: MEMBERSHIP
+                          resourceId:
+                            type: string
+                            nullable: true
+                            example: clx123membership456
+                          metadata:
+                            type: object
+                            nullable: true
+                            additionalProperties: true
+                            example:
+                              oldRole: MEMBER
+                              newRole: ADMIN
+                          createdAt:
+                            type: string
+                            format: date-time
+                            example: "2026-08-24T18:30:00.000Z"
+                          actor:
+                            type: object
+                            nullable: true
+                            properties:
+                              id:
+                                type: string
+                                example: clx456user789
+                              name:
+                                type: string
+                                example: Ayush Vyas
+                              email:
+                                type: string
+                                format: email
+                                example: ayush@example.com
+
+                    total:
+                      type: integer
+                      example: 45
+
+                    page:
+                      type: integer
+                      example: 1
+
+                    limit:
+                      type: integer
+                      example: 10
+
+                    totalPages:
+                      type: integer
+                      example: 5
+
+      "400":
+        description: Invalid organization ID or query parameters.
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "403":
+        description: User does not have access to this organization.
+
+      "404":
+        description: No audit logs found for the given organization.
+
+getAuditLog:
+  get:
+    summary: Get audit log by ID
+    description: Returns a specific audit log belonging to an organization.
+    tags:
+      - Audit Logs
+    security:
+      - cookieAuth: []
+
+    parameters:
+      - in: path
+        name: organizationId
+        required: true
+        description: The ID of the organization.
+        schema:
+          type: string
+        example: clx789org123
+
+      - in: path
+        name: auditLogId
+        required: true
+        description: The ID of the audit log.
+        schema:
+          type: string
+        example: clx123audit456
+
+    responses:
+      "200":
+        description: Audit log retrieved successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Audit log retrieved successfully
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: clx123audit456
+                    organizationId:
+                      type: string
+                      example: clx789org123
+                    actorId:
+                      type: string
+                      nullable: true
+                      example: clx456user789
+                    action:
+                      type: string
+                      enum:
+                        - MEMBER_INVITED
+                        - MEMBER_JOINED
+                        - MEMBER_REMOVED
+                        - MEMBER_LEFT
+                        - ROLE_CHANGED
+                        - INVITATION_REJECTED
+                        - INVITATION_REVOKED
+                        - ORGANIZATION_UPDATED
+                      example: MEMBER_JOINED
+                    resourceType:
+                      type: string
+                      enum:
+                        - ORGANIZATION
+                        - MEMBERSHIP
+                        - INVITATION
+                      example: MEMBERSHIP
+                    resourceId:
+                      type: string
+                      nullable: true
+                      example: clx123membership456
+                    metadata:
+                      type: object
+                      nullable: true
+                      additionalProperties: true
+                      example:
+                        role: MEMBER
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2026-08-24T18:30:00.000Z"
+                    actor:
+                      type: object
+                      nullable: true
+                      properties:
+                        id:
+                          type: string
+                          example: clx456user789
+                        name:
+                          type: string
+                          example: Ayush Vyas
+                        email:
+                          type: string
+                          format: email
+                          example: ayush@example.com
+
+      "400":
+        description: Invalid organization ID or audit log ID.
+
+      "401":
+        description: Unauthorized. Authentication is required.
+
+      "403":
+        description: User does not have access to this organization.
+
+      "404":
+        description: Audit log not found.

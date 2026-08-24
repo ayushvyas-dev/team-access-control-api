@@ -49,6 +49,9 @@ export async function getAuditLogs(
   return {
     logs,
     total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
   };
 }
 
