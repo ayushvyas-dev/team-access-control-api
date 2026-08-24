@@ -3,8 +3,8 @@ import {
   getMembershipsByOrgId,
   getMembershipByOrgAndMemberId,
   deleteMembershipWithAuditLog,
-  deleteCurrentUserMembershipById,
   updateMembershipWithAuditLog,
+  deleteUserMembershipWithAuditLog,
 } from "./membership.repository.js";
 import { AppError } from "../../utils/appError.js";
 
@@ -80,7 +80,7 @@ export async function deleteCurrentUserMembershipService(
   userId: string,
   organizationId: string,
 ) {
-  const membership = await deleteCurrentUserMembershipById(
+  const membership = await deleteUserMembershipWithAuditLog(
     userId,
     organizationId,
   );

@@ -64,26 +64,6 @@ export async function getInvitationByOrgAndInvitationId(
   });
 }
 
-// export async function createInvitationByOrgAndEmail(
-//   organizationId: string,
-//   invitedById: string,
-//   email: string,
-//   role: Role,
-//   invitationHash: string,
-//   expiresAt: Date,
-// ) {
-//   return prisma.invitation.create({
-//     data: {
-//       organizationId,
-//       invitedById,
-//       email,
-//       role,
-//       tokenHash: invitationHash,
-//       expiresAt,
-//     },
-//   });
-// }
-
 export async function createInvitationWithAuditLog(
   organizationId: string,
   invitedById: string,
@@ -139,18 +119,6 @@ export async function createInvitationByOrgAndEmail(
     },
   });
 }
-
-// export async function deleteInvitationByOrgAndInvitationId(
-//   organizationId: string,
-//   invitationId: string,
-// ) {
-//   return prisma.invitation.delete({
-//     where: {
-//       organizationId,
-//       id: invitationId,
-//     },
-//   });
-// }
 
 export async function deleteInvitationWithAuditLog(
   organizationId: string,
@@ -216,20 +184,6 @@ export async function findInvitationById(invitationId: string) {
   });
 }
 
-// export async function createMembershipFromInvitation(
-//   organizationId: string,
-//   userId: string,
-//   role: Role,
-// ) {
-//   return prisma.membership.create({
-//     data: {
-//       organizationId,
-//       userId,
-//       role,
-//     },
-//   });
-// }
-
 export async function createMembershipWithAuditLog(
   organizationId: string,
   userId: string,
@@ -271,28 +225,6 @@ export async function createMembershipWithAuditLog(
     return membership;
   });
 }
-
-// export async function acceptInvitationById(invitationId: string) {
-//   return prisma.invitation.update({
-//     where: {
-//       id: invitationId,
-//     },
-//     data: {
-//       status: "ACCEPTED",
-//     },
-//   });
-// }
-
-// export async function rejectInvitationById(invitationId: string) {
-//   return prisma.invitation.update({
-//     where: {
-//       id: invitationId,
-//     },
-//     data: {
-//       status: "REJECTED",
-//     },
-//   });
-// }
 
 export async function rejectInvitationWithAuditLog(
   invitationId: string,

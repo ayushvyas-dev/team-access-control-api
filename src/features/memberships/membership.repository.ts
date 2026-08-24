@@ -21,27 +21,6 @@ export async function getMembershipByOrgAndMemberId(
   });
 }
 
-// export async function updateMembershipByOrgAndMemberId(
-//   organizationId: string,
-//   memberId: string,
-//   role: Role,
-// ) {
-//   return prisma.membership.update({
-//     where: {
-//       userId_organizationId: {
-//         organizationId,
-//         userId: memberId,
-//       },
-//     },
-//     data: {
-//       role,
-//     },
-//     select: {
-//       role: true,
-//     },
-//   });
-// }
-
 export async function updateMembershipWithAuditLog(
   organizationId: string,
   memberId: string,
@@ -93,18 +72,6 @@ export async function updateMembershipWithAuditLog(
   });
 }
 
-// export async function deleteMembershipByOrgAndMemberId(
-//   organizationId: string,
-//   memberId: string,
-// ) {
-//   return prisma.membership.deleteMany({
-//     where: {
-//       organizationId,
-//       userId: memberId,
-//     },
-//   });
-// }
-
 export async function deleteMembershipWithAuditLog(
   organizationId: string,
   memberId: string,
@@ -148,14 +115,44 @@ export async function deleteMembershipWithAuditLog(
   });
 }
 
-export async function deleteCurrentUserMembershipById(
+export async function deleteUserMembershipWithAuditLog(
   userId: string,
   organizationId: string,
 ) {
-  return prisma.membership.deleteMany({
-    where: {
-      userId,
-      organizationId,
-    },
+  return prisma.$transaction(async (tx) => {
+    const membership = await tx.membership.findUnique({
+      where: {
+        userId_organizationId: {
+          userId,
+          organizationId,
+        },
+      },
+    });
+
+    if (!membership) {
+      return null;
+    }
+
+    await tx.membership.delete({
+      where: {
+        id: membership.id,
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        organizationId,
+        actorId: userId,
+        action: "MEMBER_LEFT",
+        resourceType: "MEMBERSHIP",
+        resourceId: membership.id,
+        metadata: {
+          memberId: userId,
+          previousRole: membership.role,
+        },
+      },
+    });
+
+    return membership;
   });
 }
