@@ -189,17 +189,59 @@ export async function findInvitationById(invitationId: string) {
   });
 }
 
-export async function createMembershipFromInvitation(
+// export async function createMembershipFromInvitation(
+//   organizationId: string,
+//   userId: string,
+//   role: Role,
+// ) {
+//   return prisma.membership.create({
+//     data: {
+//       organizationId,
+//       userId,
+//       role,
+//     },
+//   });
+// }
+
+export async function createMembershipWithAuditLog(
   organizationId: string,
   userId: string,
   role: Role,
+  invitationId: string,
 ) {
-  return prisma.membership.create({
-    data: {
-      organizationId,
-      userId,
-      role,
-    },
+  return prisma.$transaction(async (tx) => {
+    const membership = await tx.membership.create({
+      data: {
+        organizationId,
+        userId,
+        role,
+      },
+    });
+
+    await tx.invitation.update({
+      where: {
+        id: invitationId,
+      },
+      data: {
+        status: "ACCEPTED",
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        organizationId,
+        actorId: userId,
+        action: "MEMBER_JOINED",
+        resourceType: "MEMBERSHIP",
+        resourceId: membership.id,
+        metadata: {
+          invitationId,
+          role,
+        },
+      },
+    });
+
+    return membership;
   });
 }
 

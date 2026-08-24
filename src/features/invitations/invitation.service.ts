@@ -3,7 +3,6 @@ import { getOrganizationById } from "../organizations/organization.repository.js
 import crypto from "crypto";
 import { hashToken } from "../../utils/token.js";
 import {
-  acceptInvitationById,
   createInvitationWithAuditLog,
   deleteInvitationByOrgAndInvitationId,
   getAllOrgInvitations,
@@ -11,7 +10,7 @@ import {
   getInvitationByOrgAndInvitationId,
   getMembershipByOrgAndEmail,
   rejectInvitationById,
-  createMembershipFromInvitation,
+  createMembershipWithAuditLog,
   getUserInvitations,
   findInvitationById,
 } from "./invitation.repository.js";
@@ -188,21 +187,17 @@ export async function acceptInvitationService(
     throw new AppError("Invitation already accepted or rejected", 400);
   }
 
-  const createMembershipResult = await createMembershipFromInvitation(
+  const createMembershipResult = await createMembershipWithAuditLog(
     invitation.organizationId,
     userId,
     invitation.role,
+    invitation.id,
   );
   if (!createMembershipResult) {
     throw new AppError("Failed to create membership from invitation", 500);
   }
 
-  const inviteResult = await acceptInvitationById(invitation.id);
-  if (!inviteResult) {
-    throw new AppError("Failed to accept invitation", 500);
-  }
-
-  return inviteResult;
+  return createMembershipResult;
 }
 
 export async function rejectInvitationService(
