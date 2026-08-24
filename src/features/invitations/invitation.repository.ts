@@ -140,15 +140,42 @@ export async function createInvitationByOrgAndEmail(
   });
 }
 
-export async function deleteInvitationByOrgAndInvitationId(
+// export async function deleteInvitationByOrgAndInvitationId(
+//   organizationId: string,
+//   invitationId: string,
+// ) {
+//   return prisma.invitation.delete({
+//     where: {
+//       organizationId,
+//       id: invitationId,
+//     },
+//   });
+// }
+
+export async function deleteInvitationWithAuditLog(
   organizationId: string,
   invitationId: string,
+  actorId: string,
 ) {
-  return prisma.invitation.delete({
-    where: {
-      organizationId,
-      id: invitationId,
-    },
+  return prisma.$transaction(async (tx) => {
+    const invitation = await tx.invitation.delete({
+      where: {
+        organizationId,
+        id: invitationId,
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        organizationId,
+        actorId,
+        action: "INVITATION_REVOKED",
+        resourceType: "INVITATION",
+        resourceId: invitation.id,
+      },
+    });
+
+    return invitation;
   });
 }
 
@@ -245,24 +272,53 @@ export async function createMembershipWithAuditLog(
   });
 }
 
-export async function acceptInvitationById(invitationId: string) {
-  return prisma.invitation.update({
-    where: {
-      id: invitationId,
-    },
-    data: {
-      status: "ACCEPTED",
-    },
-  });
-}
+// export async function acceptInvitationById(invitationId: string) {
+//   return prisma.invitation.update({
+//     where: {
+//       id: invitationId,
+//     },
+//     data: {
+//       status: "ACCEPTED",
+//     },
+//   });
+// }
 
-export async function rejectInvitationById(invitationId: string) {
-  return prisma.invitation.update({
-    where: {
-      id: invitationId,
-    },
-    data: {
-      status: "REJECTED",
-    },
+// export async function rejectInvitationById(invitationId: string) {
+//   return prisma.invitation.update({
+//     where: {
+//       id: invitationId,
+//     },
+//     data: {
+//       status: "REJECTED",
+//     },
+//   });
+// }
+
+export async function rejectInvitationWithAuditLog(
+  invitationId: string,
+  organizationId: string,
+  actorId: string,
+) {
+  return prisma.$transaction(async (tx) => {
+    const invitation = await tx.invitation.update({
+      where: {
+        id: invitationId,
+      },
+      data: {
+        status: "REJECTED",
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        organizationId,
+        actorId,
+        action: "INVITATION_REJECTED",
+        resourceType: "INVITATION",
+        resourceId: invitation.id,
+      },
+    });
+
+    return invitation;
   });
 }

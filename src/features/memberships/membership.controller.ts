@@ -60,12 +60,14 @@ export async function updateMembership(
   try {
     const organizationId = req.params.organizationId as string;
     const memberId = req.params.memberId as string;
+    const userId = req.user!.id;
     const { role } = req.body;
 
     const membership = await updateMembershipService(
       organizationId,
       memberId,
       role,
+      userId,
     );
 
     return res.status(200).json({
@@ -88,8 +90,9 @@ export async function deleteMembership(
   try {
     const organizationId = req.params.organizationId as string;
     const memberId = req.params.memberId as string;
+    const userId = req.user!.id;
 
-    await deleteMembershipService(organizationId, memberId);
+    await deleteMembershipService(organizationId, memberId, userId);
 
     return res.status(200).json({
       success: true,

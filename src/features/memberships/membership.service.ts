@@ -2,9 +2,9 @@ import { Role } from "@prisma/client";
 import {
   getMembershipsByOrgId,
   getMembershipByOrgAndMemberId,
-  updateMembershipByOrgAndMemberId,
-  deleteMembershipByOrgAndMemberId,
+  deleteMembershipWithAuditLog,
   deleteCurrentUserMembershipById,
+  updateMembershipWithAuditLog,
 } from "./membership.repository.js";
 import { AppError } from "../../utils/appError.js";
 
@@ -40,11 +40,13 @@ export async function updateMembershipService(
   organizationId: string,
   memberId: string,
   role: Role,
+  actorId: string,
 ) {
-  const membership = await updateMembershipByOrgAndMemberId(
+  const membership = await updateMembershipWithAuditLog(
     organizationId,
     memberId,
     role,
+    actorId,
   );
   if (!membership) {
     throw new AppError(
@@ -58,10 +60,12 @@ export async function updateMembershipService(
 export async function deleteMembershipService(
   organizationId: string,
   memberId: string,
+  actorId: string,
 ) {
-  const membership = await deleteMembershipByOrgAndMemberId(
+  const membership = await deleteMembershipWithAuditLog(
     organizationId,
     memberId,
+    actorId,
   );
   if (!membership) {
     throw new AppError(

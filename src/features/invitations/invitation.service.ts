@@ -4,12 +4,12 @@ import crypto from "crypto";
 import { hashToken } from "../../utils/token.js";
 import {
   createInvitationWithAuditLog,
-  deleteInvitationByOrgAndInvitationId,
+  deleteInvitationWithAuditLog,
   getAllOrgInvitations,
   getInvitationByOrgAndEmail,
   getInvitationByOrgAndInvitationId,
   getMembershipByOrgAndEmail,
-  rejectInvitationById,
+  rejectInvitationWithAuditLog,
   createMembershipWithAuditLog,
   getUserInvitations,
   findInvitationById,
@@ -136,6 +136,7 @@ export async function getInvitationsService(organizationId: string) {
 export async function deleteInvitationService(
   organizationId: string,
   invitationId: string,
+  userId: string,
 ) {
   const invitation = await getInvitationByOrgAndInvitationId(
     organizationId,
@@ -146,9 +147,10 @@ export async function deleteInvitationService(
     throw new AppError("Invitation not found", 404);
   }
 
-  const deletedInvitation = await deleteInvitationByOrgAndInvitationId(
+  const deletedInvitation = await deleteInvitationWithAuditLog(
     organizationId,
     invitationId,
+    userId,
   );
   if (!deletedInvitation) {
     throw new AppError("Failed to delete invitation", 500);
@@ -230,7 +232,11 @@ export async function rejectInvitationService(
     throw new AppError("Invitation already accepted or rejected", 400);
   }
 
-  const inviteResult = await rejectInvitationById(invitation.id);
+  const inviteResult = await rejectInvitationWithAuditLog(
+    invitation.id,
+    invitation.organizationId,
+    userId,
+  );
   if (!inviteResult) {
     throw new AppError("Failed to reject invitation", 500);
   }

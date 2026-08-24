@@ -79,10 +79,11 @@ export async function deleteInvitation(
   next: NextFunction,
 ) {
   try {
+    const userId = req.user!.id;
     const organizationId = req.params.organizationId as string;
     const invitationId = req.params.invitationId as string;
 
-    await deleteInvitationService(organizationId, invitationId);
+    await deleteInvitationService(organizationId, invitationId, userId);
 
     return res.status(200).json({
       success: true,
