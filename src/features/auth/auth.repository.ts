@@ -25,23 +25,57 @@ export async function getUserById(userId: string) {
   });
 }
 
-export async function createUser(data: {
-  name: string;
-  email: string;
-  passwordHash: string;
-}) {
-  return prisma.user.create({
-    data,
-  });
-}
+// export async function createUser(data: {
+//   name: string;
+//   email: string;
+//   passwordHash: string;
+// }) {
+//   return prisma.user.create({
+//     data,
+//   });
+// }
 
-export async function createOtp(data: {
-  userId: string;
-  otpHash: string;
-  expiresAt: Date;
+// export async function createOtp(data: {
+//   userId: string;
+//   otpHash: string;
+//   expiresAt: Date;
+// }) {
+//   return prisma.otp.create({
+//     data,
+//   });
+// }
+
+export async function createUserWithOtp({
+  user,
+  otp,
+}: {
+  user: {
+    name: string;
+    email: string;
+    passwordHash: string;
+  };
+  otp: {
+    otpHash: string;
+    expiresAt: Date;
+  };
 }) {
-  return prisma.otp.create({
-    data,
+  return prisma.$transaction(async (tx) => {
+    const createdUser = await tx.user.create({
+      data: user,
+    });
+
+    const createdOtp = await tx.otp.create({
+      data: {
+        userId: createdUser.id,
+        otpHash: otp.otpHash,
+        expiresAt: otp.expiresAt,
+      },
+    });
+
+    return {
+      user: createdUser,
+      otp: createdOtp,
+    };
   });
 }
 

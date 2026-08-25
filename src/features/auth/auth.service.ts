@@ -1,7 +1,6 @@
 import {
-  createOtp,
   createRefreshToken,
-  createUser,
+  createUserWithOtp,
   findOtpByEmail,
   findUserByEmail,
   markUserEmailVerify,
@@ -48,19 +47,18 @@ export async function registerUser({
 
   const passwordHash = await bcrypt.hash(password, 12);
 
-  const user = await createUser({ name, email, passwordHash });
-  if (!user) {
-    throw new AppError("Failed to create user", 500);
-  }
-
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const otpHash = await bcrypt.hash(otp, 12);
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-  const createdOtp = await createOtp({ userId: user.id, otpHash, expiresAt });
-  if (!createdOtp) {
-    throw new AppError("Failed to create OTP", 500);
+  const user = await createUserWithOtp({
+    user: { name, email, passwordHash },
+    otp: { otpHash, expiresAt },
+  });
+  if (!user) {
+    throw new AppError("Failed to create user", 500);
   }
+
   const createdEmailJob = await emailQueue.add("send-verification-email", {
     email,
     otp,
