@@ -1,5 +1,5 @@
 import request from "supertest";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import app from "../../../src/app.js";
 import prisma from "../../../src/db/prisma.js";
