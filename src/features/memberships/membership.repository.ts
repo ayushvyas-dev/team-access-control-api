@@ -28,12 +28,10 @@ export async function updateMembershipWithAuditLog(
   actorId: string,
 ) {
   return prisma.$transaction(async (tx) => {
-    const membership = await tx.membership.findUnique({
+    const membership = await tx.membership.findFirst({
       where: {
-        userId_organizationId: {
-          organizationId,
-          userId: memberId,
-        },
+        id: memberId,
+        organizationId,
       },
     });
 
