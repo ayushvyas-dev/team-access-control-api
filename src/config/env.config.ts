@@ -19,8 +19,6 @@ const envSchema = z.object({
   SMTP_USER: z.string().email(),
   SMTP_PASSWORD: z.string(),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
-  API_DOCS_USERNAME: z.string().min(1),
-  API_DOCS_PASSWORD: z.string().min(8),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
