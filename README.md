@@ -43,9 +43,9 @@ The project is built as a modular monolith. The goal is to keep the system simpl
 | API documentation | OpenAPI 3 + Swagger UI |
 | Testing | Vitest + Supertest |
 | Development runner | tsx |
-| Deployment target | Docker on AWS EC2 |
+| Deployment | Render |
 
-The current database connection uses Prisma's Neon adapter, so PostgreSQL can be provided by a managed service such as Neon instead of running PostgreSQL directly on EC2. Redis is currently provided through Upstash.
+The current database connection uses Prisma's Neon adapter, so PostgreSQL can be provided by a managed service such as Neon instead of running PostgreSQL directly. Redis is currently provided through Upstash.
 
 ## Architecture
 
@@ -439,8 +439,6 @@ SMTP_PASSWORD=your_smtp_password
 
 LOG_LEVEL=info
 
-API_DOCS_USERNAME=your_docs_username
-API_DOCS_PASSWORD=your_docs_password
 ```
 
 The application validates environment variables at startup and exits if required configuration is missing or invalid.
@@ -469,17 +467,8 @@ http://localhost:5000/api/v1
 
 The port is controlled by `PORT`.
 
-### 6. Run the worker
 
-```bash
-npm run worker
-```
-
-The email worker consumes verification-email jobs from BullMQ.
-
-Review the final process model before production deployment. If API and worker processes are separated into different containers, the worker should run independently rather than being duplicated unnecessarily across API replicas.
-
-### 7. Run tests
+### 6. Run tests
 
 ```bash
 npm test
@@ -489,58 +478,6 @@ Vitest is configured with global setup and test setup files.
 
 Integration tests use a separate test database configured through `TEST_DATABASE_URL`.
 
-## Docker and AWS EC2 deployment
-
-The planned deployment target is:
-
-```text
-Internet
-   |
-   v
-AWS EC2
-   |
-   +-- Docker: Team Access Control API
-   |
-   +-- Docker/process: Email Worker
-   |
-   +----> Neon PostgreSQL
-   |
-   +----> Upstash Redis
-   |
-   +----> SMTP provider
-```
-
-### Current deployment status
-
-The application is intended to be deployed using Docker on AWS EC2.
-
-Before deployment, the repository needs its production Docker setup, including a `Dockerfile` and the final API/worker process model.
-
-The deployment should follow roughly this flow:
-
-1. Build the production Docker image.
-2. Configure production environment variables on EC2.
-3. Run Prisma migrations against the production database.
-4. Start the API container.
-5. Start the worker as a separate process/container if required.
-6. Configure the EC2 security group.
-7. Put HTTPS in front of the application using a reverse proxy/load balancer.
-8. Configure automatic container restarts and basic monitoring.
-
-A typical container command after the Dockerfile is finalized would look like:
-
-```bash
-docker build -t team-access-control-api .
-
-docker run -d \
-  --name team-access-control-api \
-  --restart unless-stopped \
-  --env-file .env \
-  -p 5000:5000 \
-  team-access-control-api
-```
-
-The exact command should match the final Dockerfile and deployment architecture.
 
 ### Production considerations
 
@@ -548,14 +485,10 @@ For a public deployment:
 
 - Do not expose PostgreSQL directly to the internet.
 - Do not expose Redis directly to the internet.
-- Keep secrets outside the Docker image.
 - Use HTTPS.
 - Use secure cookie settings in production.
-- Restrict the EC2 security group to only the required ports.
 - Run database migrations as an explicit deployment step.
-- Configure container restart policies.
 - Keep application and worker logs accessible.
-- Avoid running multiple workers unintentionally if the deployment is scaled horizontally.
 
 ## Security considerations
 
@@ -646,7 +579,6 @@ The major backend functionality is implemented, including:
 - API documentation
 - Integration-test setup
 
-The remaining deployment-oriented work is primarily Docker/containerization, production infrastructure configuration, and deployment verification on AWS EC2.
 
 ## API documentation
 
@@ -658,7 +590,6 @@ Swagger UI is available at:
 /api/v1/api-docs
 ```
 
-The API documentation is protected by HTTP Basic Authentication in the current configuration. The credentials should be supplied through environment variables rather than hard-coded.
 
 ## Why this project was built this way
 
@@ -666,4 +597,4 @@ This project is intentionally more than a collection of CRUD endpoints.
 
 The main focus is on the backend concerns that become important when an application has real users: session revocation, refresh-token rotation, authorization boundaries, transactional state changes, auditability, asynchronous work, shared rate limiting, validation, logging, and graceful shutdown.
 
-At the same time, the project avoids premature infrastructure complexity. It remains one deployable backend with clear internal modules, making it practical to run on a single AWS EC2 instance while leaving room to scale individual pieces later if the requirements justify it.
+
