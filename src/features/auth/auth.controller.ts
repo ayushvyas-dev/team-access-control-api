@@ -13,13 +13,13 @@ export async function register(
 ) {
   try {
     const { name, email, password } = req.body;
-    const user = await registerUser({ name, email, password });
+    const result = await registerUser({ name, email, password });
 
     return res.status(201).json({
       success: true,
       message:
         "User registered successfully, verify your email to activate your account",
-      data: { name: user.name, email: user.email },
+      data: { name: result.user.name, email: result.user.email },
     });
   } catch (error) {
     return next(error);

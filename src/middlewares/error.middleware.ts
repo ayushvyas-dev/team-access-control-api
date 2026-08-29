@@ -4,9 +4,9 @@ import { AppError } from "../utils/appError.js";
 
 export const errorHandler = (
   err: AppError,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   const statusCode = err.statusCode || 500;
 

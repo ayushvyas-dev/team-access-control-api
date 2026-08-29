@@ -50,7 +50,7 @@ app.use(
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1", membershipRouter);
 app.use("/api/v1", invitationRouter);
-app.use("/api/v1/sessions", sessionRouter);
+app.use("/api/v1/sessions",rateLimit(genericLimiter), sessionRouter);
 app.use("/api/v1", auditLogRouter);
 
 app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
