@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "start": "node src/server.js",
+    "start": "tsx src/server.ts",
     "test": "tsx scripts/test.ts",
     "worker": "tsx src/workers/email.worker.ts"
   },

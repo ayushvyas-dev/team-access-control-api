@@ -59,14 +59,14 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "none",
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     });
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "none",
       expires: new Date(Date.now() + 10 * 60 * 1000),
     });
 
@@ -90,14 +90,14 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "none",
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     });
 
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "none",
       expires: new Date(Date.now() + 10 * 60 * 1000),
     });
 
