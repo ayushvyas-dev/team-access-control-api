@@ -45,7 +45,7 @@ The project is built as a modular monolith. The goal is to keep the system simpl
 | Validation | Zod |
 | Rate limiting | Upstash Redis + `@upstash/ratelimit` |
 | Background jobs | BullMQ + Redis |
-| Email | Nodemailer / SMTP |
+| Email | Brevo |
 | Logging | Pino + pino-http |
 | API documentation | OpenAPI 3 + Swagger UI |
 | Testing | Vitest + Supertest |
@@ -91,7 +91,7 @@ Services
 Repositories        Queues / Jobs
   |                    |
   v                    v
-Prisma              BullMQ -> Redis -> Email Worker -> SMTP
+Prisma              BullMQ -> Redis -> Email Worker -> Brevo API
   |
   v
 PostgreSQL
@@ -161,11 +161,11 @@ Handles cross-cutting concerns such as authentication, authorization, organizati
 
 **Config**
 
-Centralizes environment validation, Redis connections, logging, SMTP, permissions, roles, and Swagger configuration.
+Centralizes environment validation, Redis connections, logging, email, permissions, roles, and Swagger configuration.
 
 **Queues / workers**
 
-Move email delivery away from the HTTP request-response path. The API creates a BullMQ job and the worker handles the actual SMTP operation.
+Move email delivery away from the HTTP request-response path. The API creates a BullMQ job and the worker handles email delivery through the Brevo API.
 
 ## Main features
 
@@ -269,7 +269,9 @@ This is important for deployment because rate-limit state can remain shared even
 
 Verification emails are placed into a BullMQ queue.
 
-Redis acts as the queue backend and a worker consumes the jobs and sends emails through SMTP.
+Redis acts as the queue backend and a worker consumes the jobs and sends emails through the Brevo API.
+
+This keeps email delivery outside the HTTP request-response path and allows failed jobs to be retried independently.
 
 The application also has graceful-shutdown handling so resources can be closed cleanly.
 
@@ -402,7 +404,7 @@ Install:
 - npm
 - PostgreSQL or a PostgreSQL-compatible managed database
 - Redis-compatible service
-- SMTP account
+- Brevo account
 
 The current production-oriented configuration uses Neon for PostgreSQL connectivity and Upstash for Redis.
 
@@ -441,8 +443,8 @@ REFRESH_TOKEN_SECRET=your_refresh_token_secret
 ACCESS_TOKEN_EXPIRES_IN=15m
 REFRESH_TOKEN_EXPIRES_DAYS=30
 
-SMTP_USER=your_smtp_email
-SMTP_PASSWORD=your_smtp_password
+BREVO_API_KEY=your_brevo_api_key
+BREVO_SENDER_EMAIL=your_verified_sender_email
 
 LOG_LEVEL=info
 
@@ -523,7 +525,7 @@ team-access-control-api/
 │   │   ├── bullmqRedis.config.ts
 │   │   ├── env.config.ts
 │   │   ├── logger.config.ts
-│   │   ├── nodemailer.config.ts
+│   │   ├── brevo.config.ts
 │   │   ├── permissions.config.ts
 │   │   ├── rateLimitRedis.config.ts
 │   │   ├── rolePermission.config.ts
