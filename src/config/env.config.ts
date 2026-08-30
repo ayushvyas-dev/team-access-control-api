@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const envSchema = z.object({
-  PORT: z.string().default("3000"),
+  PORT: z.string().default("5000"),
   FRONTEND_URL: z.string().url(),
   DATABASE_URL: z.string(),
   UPSTASH_REDIS_REST_URL: z.string(),
@@ -16,8 +16,8 @@ const envSchema = z.object({
   REFRESH_TOKEN_SECRET: z.string(),
   ACCESS_TOKEN_EXPIRES_IN: z.string().default("15m"),
   REFRESH_TOKEN_EXPIRES_DAYS: z.string().default("30"),
-  SMTP_USER: z.string().email(),
-  SMTP_PASSWORD: z.string(),
+  BREVO_API_KEY: z.string(),
+  BREVO_SENDER_EMAIL: z.string().email(),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   NODE_ENV: z
     .enum(["development", "production", "test"])
