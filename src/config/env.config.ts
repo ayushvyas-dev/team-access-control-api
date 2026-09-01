@@ -15,7 +15,7 @@ const envSchema = z.object({
   ACCESS_TOKEN_SECRET: z.string(),
   REFRESH_TOKEN_SECRET: z.string(),
   ACCESS_TOKEN_EXPIRES_IN: z.string().default("15m"),
-  REFRESH_TOKEN_EXPIRES_DAYS: z.string().default("30"),
+  REFRESH_TOKEN_EXPIRES_DAYS: z.coerce.number().default(30),
   BREVO_API_KEY: z.string(),
   BREVO_SENDER_EMAIL: z.string().email(),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),

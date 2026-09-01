@@ -4,7 +4,20 @@ import {
   verifyUserEmail,
   refreshAccessToken,
 } from "./auth.service.js";
+import { config } from "../../config/env.config.js";
 import { NextFunction, Request, Response } from "express";
+
+
+const getAccessTokenExpiresAt = () => {
+  return new Date(Date.now() + 15 * 60 * 1000);
+};
+
+const getRefreshTokenExpiresAt = () => {
+  return new Date(
+    Date.now() +
+      config.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60 * 1000,
+  );
+};
 
 export async function register(
   req: Request,
@@ -58,16 +71,16 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: config.NODE_ENV === "production",
       sameSite: "none",
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      expires: getRefreshTokenExpiresAt(),
     });
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: config.NODE_ENV === "production",
       sameSite: "none",
-      expires: new Date(Date.now() + 10 * 60 * 1000),
+      expires: getAccessTokenExpiresAt(),
     });
 
     return res.status(200).json({
@@ -84,21 +97,21 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
   try {
     const refreshToken = req.cookies.refreshToken;
 
-    const { newAccessToken, newRefreshToken } =
+    const { newAccessToken, newRefreshToken,sessionExpiresAt } =
       await refreshAccessToken(refreshToken);
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: config.NODE_ENV === "production",
       sameSite: "none",
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      expires: sessionExpiresAt, // 30 days
     });
 
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: config.NODE_ENV === "production",
       sameSite: "none",
-      expires: new Date(Date.now() + 10 * 60 * 1000),
+      expires: getAccessTokenExpiresAt(), // 15 minutes
     });
 
     return res.status(200).json({

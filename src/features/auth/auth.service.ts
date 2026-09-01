@@ -17,8 +17,8 @@ import {
 } from "../sessions/session.repository.js";
 
 import { emailQueue } from "../../queues/email.queue.js";
+import {config} from "../../config/env.config.js";
 
-const REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000;
 
 export async function registerUser({
   name,
@@ -104,12 +104,20 @@ export async function loginUser({
   if (!isPasswordValid) {
     throw new AppError("Invalid credentials", 401);
   }
+  const sessionExpiresAt = new Date(
+  Date.now() +
+    config.REFRESH_TOKEN_EXPIRES_DAYS *
+      24 *
+      60 *
+      60 *
+      1000,
+);
 
   const session = await createSession({
     userId: user.id,
     userAgent: userAgent,
     ip: ip,
-    expiresAt: new Date(Date.now() + REFRESH_TOKEN_LIFETIME),
+    expiresAt: sessionExpiresAt,
   });
   if (!session) {
     throw new AppError("Failed to create session", 500);
@@ -123,7 +131,7 @@ export async function loginUser({
   const createdRefreshToken = await createRefreshToken({
     sessionId: session.id,
     tokenHash: refreshTokenHash,
-    expiresAt: new Date(Date.now() + REFRESH_TOKEN_LIFETIME),
+    expiresAt: session.expiresAt,
   });
   if (!createdRefreshToken) {
     throw new AppError("Failed to create refresh token", 500);
@@ -197,8 +205,17 @@ export async function refreshAccessToken(refreshToken: string) {
     throw new AppError("Session expired", 400);
   }
 
+  // Calculate remaining session lifetime in seconds
+const refreshExpiresInSeconds = Math.max(
+  0,
+  Math.floor(
+    (session.expiresAt.getTime() - Date.now()) / 1000,
+  ),
+);
+
+
   // Rotate refresh token
-  const newRefreshToken = createToken(session.userId, session.id, "refresh");
+  const newRefreshToken = createToken(session.userId, session.id, "refresh",refreshExpiresInSeconds);
 
   const newRefreshTokenHash = hashToken(newRefreshToken);
 
@@ -206,7 +223,7 @@ export async function refreshAccessToken(refreshToken: string) {
     oldTokenId: storedToken.id,
     sessionId: session.id,
     tokenHash: newRefreshTokenHash,
-    expiresAt: new Date(Date.now() + REFRESH_TOKEN_LIFETIME),
+    expiresAt: session.expiresAt,
   });
 
   if (!tokenRotate) {
@@ -217,5 +234,6 @@ export async function refreshAccessToken(refreshToken: string) {
   return {
     newAccessToken: newAccessToken,
     newRefreshToken: newRefreshToken,
+    sessionExpiresAt: session.expiresAt,
   };
 }
